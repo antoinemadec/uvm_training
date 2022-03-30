@@ -1,13 +1,1 @@
 easier_uvm_gen.log
-generated_tb/sim/simvision*
-simvision*.log
-simvision*
-.simvision/
-waves.shm/
-xcelium.d/
-xrun.history
-xrun.key
-xrun.log
-cov_work/
-imc.log
-mdv.log

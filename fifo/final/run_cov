@@ -2,4 +2,7 @@
 
 set -e
 
-./run -coverage u +coverage_enable $@
+rm -rf generated_tb/sim/cov_work
+cp -f ./covfile.txt generated_tb/sim/
+
+./run -covfile ./covfile.txt +coverage_enable $@

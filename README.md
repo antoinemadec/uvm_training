@@ -47,19 +47,23 @@ Learn how to build a complete UVM testbench in 3 weeks
   2. monitor & driver: fill out run_phase, make sure it compiles
   3. sequence
       - definition: "virtual sequence = sequence launching other sequences"
-      - discusion: vitual sequence is called from the uvm_env, can also be called from the uvm_test
+      - discussion: virtual sequence is called from the uvm_env, can also be called from the uvm_test
 
 ### week3 day3
   1. scoreboard
   2. add delay in drivers
 
 ### week3 day4
-  1. coverage: code
-  2. coverage: functional
-      - monitor only
-      - scoreboard
-          - add full->empty->full
-          - empty->full->empty
+  - code coverage:
+      - makes sure all the DUT was exercised
+      - costs no time
+  - functional coverage
+      - makes sure all the expected functional corners were hit
+      - only useful for random simulations
+  1. use IMC to look at the code/functional coverage
+  2. add a covergroup checking the fifo went
+      - full->empty->full
+      - empty->full->empty
 
 ### week3 day5
   1. resources & discussion

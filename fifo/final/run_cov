@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -e
+
+./run -coverage u +coverage_enable $@

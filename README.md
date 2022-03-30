@@ -30,6 +30,7 @@ Learn how to build a complete UVM testbench in 3 weeks
       - create templates for each agent
       - use wires in the interface. This is why: [link1](https://verificationacademy.com/forums/systemverilog/wire-vs.-logic-sv-interface) and [link2](https://blogs.sw.siemens.com/verificationhorizons/2013/05/03/wire-vs-reg/)
 > Any signal with more or the potential for more than one driver should be declared as a wire.
+
       - generate code, make sure it compiles
   3. commit
       - generate a .gitignore

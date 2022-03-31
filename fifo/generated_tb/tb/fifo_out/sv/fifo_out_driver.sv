@@ -40,6 +40,9 @@ endtask : run_phase
 
 
 task fifo_out_driver::do_drive();
+  repeat (get_delay(req.rate)) begin
+    @(vif.cb);
+  end
   vif.cb.data_out_rdy <= 1'b1;
   @(vif.cb);
   while (vif.cb.data_out_vld !== 1) begin

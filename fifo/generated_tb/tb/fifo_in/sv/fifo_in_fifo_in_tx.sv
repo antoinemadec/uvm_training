@@ -11,6 +11,12 @@ class fifo_in_tx extends uvm_sequence_item;
   // Transaction variables
   rand bit[31:0] data;
 
+  // driver variables
+  rand int rate;
+
+  constraint c {
+    rate inside {[1:100]};
+  }
 
   extern function new(string name = "");
   extern function void do_copy(uvm_object rhs);

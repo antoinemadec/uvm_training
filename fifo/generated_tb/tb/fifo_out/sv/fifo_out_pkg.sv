@@ -3,7 +3,7 @@ package fifo_out_pkg;
   `include "uvm_macros.svh"
 
   import uvm_pkg::*;
-
+  import verif_utils_pkg::*;
 
   `include "fifo_out_fifo_out_tx.sv"
   `include "fifo_out_config.sv"

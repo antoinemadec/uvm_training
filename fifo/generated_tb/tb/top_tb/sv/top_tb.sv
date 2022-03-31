@@ -32,5 +32,11 @@ module top_tb;
     run_test();
   end
 
+  // dump all waveforms
+  initial
+  begin
+    $shm_open("waves.shm");
+    $shm_probe("ACMTF");
+  end
 endmodule
 

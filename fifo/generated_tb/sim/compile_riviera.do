@@ -15,7 +15,7 @@ set tb_name top
 append cmd " +incdir+../tb/include "
 
 # Compile the agents
-set agent_list {\ 
+set agent_list {\
     fifo_in \
     fifo_out \
 }

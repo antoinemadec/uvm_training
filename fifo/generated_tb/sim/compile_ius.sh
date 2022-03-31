@@ -16,4 +16,4 @@ irun -vtimescale 1ns/1ps -uvmhome ${IUS_HOME}/tools/methodology/UVM/CDNS-1.2 \
 ../tb/top_test/sv/top_test_pkg.sv \
 ../tb/top_tb/sv/top_th.sv \
 ../tb/top_tb/sv/top_tb.sv \
-+UVM_TESTNAME=top_test  $* 
++UVM_TESTNAME=top_test  $*

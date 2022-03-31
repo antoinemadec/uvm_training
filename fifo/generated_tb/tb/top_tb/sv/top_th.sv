@@ -22,7 +22,7 @@ module top_th;
   assign fifo_out_if_0.clk = clk;
 
   // Pin-level interfaces connected to DUT
-  fifo_in_if   fifo_in_if_0 (); 
+  fifo_in_if   fifo_in_if_0 ();
   fifo_out_if  fifo_out_if_0 ();
 
   fifo fifo (

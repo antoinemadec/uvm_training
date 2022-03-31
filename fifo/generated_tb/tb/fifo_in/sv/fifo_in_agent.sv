@@ -20,7 +20,7 @@ class fifo_in_agent extends uvm_agent;
   extern function void connect_phase(uvm_phase phase);
   extern function uvm_active_passive_enum get_is_active();
 
-endclass : fifo_in_agent 
+endclass : fifo_in_agent
 
 
 function  fifo_in_agent::new(string name, uvm_component parent);
@@ -71,7 +71,7 @@ function uvm_active_passive_enum fifo_in_agent::get_is_active();
       if (m_is_active != m_config.is_active)
         `uvm_warning(get_type_name(), "is_active field in config_db conflicts with config object")
     end
-    else 
+    else
       m_is_active = m_config.is_active;
   end
   return uvm_active_passive_enum'(m_is_active);

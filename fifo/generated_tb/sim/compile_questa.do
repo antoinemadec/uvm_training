@@ -8,7 +8,7 @@ set cmd "vlog -F ../dut/files.f"
 eval $cmd
 
 set tb_name top
-set agent_list {\ 
+set agent_list {\
     fifo_in \
     fifo_out \
 }

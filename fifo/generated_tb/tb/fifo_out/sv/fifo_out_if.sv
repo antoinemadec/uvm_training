@@ -1,7 +1,7 @@
 `ifndef FIFO_OUT_IF_SV
 `define FIFO_OUT_IF_SV
 
-interface fifo_out_if(); 
+interface fifo_out_if();
 
   timeunit      1ns;
   timeprecision 1ps;

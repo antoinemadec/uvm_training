@@ -6,8 +6,8 @@ class top_default_seq extends uvm_sequence #(uvm_sequence_item);
   `uvm_object_utils(top_default_seq)
 
   top_config      m_config;
-       
-  fifo_in_agent   m_fifo_in_agent; 
+
+  fifo_in_agent   m_fifo_in_agent;
   fifo_out_agent  m_fifo_out_agent;
 
   // Number of times to repeat child sequences
@@ -81,7 +81,7 @@ endtask: pre_start
 
 task top_default_seq::post_start();
   uvm_phase phase = get_starting_phase();
-  if (phase != null) 
+  if (phase != null)
     phase.drop_objection(this);
 endtask: post_start
 

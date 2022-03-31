@@ -15,7 +15,7 @@ class fifo_out_driver extends uvm_driver #(fifo_out_tx);
   extern task run_phase(uvm_phase phase);
   extern task do_drive();
 
-endclass : fifo_out_driver 
+endclass : fifo_out_driver
 
 
 function fifo_out_driver::new(string name, uvm_component parent);

@@ -15,4 +15,4 @@ vcs -sverilog +acc +vpi -timescale=1ns/1ps -ntb_opts uvm-1.2 \
 ../tb/top_test/sv/top_test_pkg.sv \
 ../tb/top_tb/sv/top_th.sv \
 ../tb/top_tb/sv/top_tb.sv \
--R +UVM_TESTNAME=top_test  $* 
+-R +UVM_TESTNAME=top_test  $*

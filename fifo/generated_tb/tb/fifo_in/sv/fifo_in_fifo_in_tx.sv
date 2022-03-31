@@ -1,7 +1,7 @@
 `ifndef FIFO_IN_SEQ_ITEM_SV
 `define FIFO_IN_SEQ_ITEM_SV
 
-class fifo_in_tx extends uvm_sequence_item; 
+class fifo_in_tx extends uvm_sequence_item;
 
   `uvm_object_utils(fifo_in_tx)
 
@@ -21,7 +21,7 @@ class fifo_in_tx extends uvm_sequence_item;
   extern function void do_unpack(uvm_packer packer);
   extern function string convert2string();
 
-endclass : fifo_in_tx 
+endclass : fifo_in_tx
 
 
 function fifo_in_tx::new(string name = "");
@@ -66,13 +66,13 @@ endfunction : do_record
 
 function void fifo_in_tx::do_pack(uvm_packer packer);
   super.do_pack(packer);
-  `uvm_pack_int(data) 
+  `uvm_pack_int(data)
 endfunction : do_pack
 
 
 function void fifo_in_tx::do_unpack(uvm_packer packer);
   super.do_unpack(packer);
-  `uvm_unpack_int(data) 
+  `uvm_unpack_int(data)
 endfunction : do_unpack
 
 

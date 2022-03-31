@@ -19,7 +19,7 @@ class fifo_out_monitor extends uvm_monitor;
   extern task run_phase(uvm_phase phase);
   extern task do_mon();
 
-endclass : fifo_out_monitor 
+endclass : fifo_out_monitor
 
 
 function fifo_out_monitor::new(string name, uvm_component parent);

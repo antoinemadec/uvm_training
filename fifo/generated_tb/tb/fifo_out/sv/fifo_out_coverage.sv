@@ -5,10 +5,10 @@ class fifo_out_coverage extends uvm_subscriber #(fifo_out_tx);
 
   `uvm_component_utils(fifo_out_coverage)
 
-  fifo_out_config m_config;    
+  fifo_out_config m_config;
   bit             m_is_covered;
   fifo_out_tx     m_item;
-     
+
   covergroup m_cov;
     option.per_instance = 1;
     // You may insert additional coverpoints here ...
@@ -23,7 +23,7 @@ class fifo_out_coverage extends uvm_subscriber #(fifo_out_tx);
   extern function void build_phase(uvm_phase phase);
   extern function void report_phase(uvm_phase phase);
 
-endclass : fifo_out_coverage 
+endclass : fifo_out_coverage
 
 
 function fifo_out_coverage::new(string name, uvm_component parent);

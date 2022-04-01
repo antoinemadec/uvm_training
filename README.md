@@ -1,12 +1,14 @@
 # uvm_training
 Learn how to build a complete UVM testbench in 3 weeks
 
+
 # Agenda
 ## I- Prerequisites
 ### week1 day1 to day3
   - create a [github](https://github.com) account
   - brush-up on object oriented programming: [try this](https://datascientest.com/programmation-orientee-objet-guide-ultime)
   - brush-up on bash scripting: [try this](https://www.learnshell.org/)
+
 
 ## II- Theoretical Training
 ### week1 day4
@@ -22,6 +24,7 @@ Learn how to build a complete UVM testbench in 3 weeks
 ### week2 day4
 
 ### week2 day5
+
 
 ## III- Practical Case Study: Fifo
 ### week3 day1
@@ -60,7 +63,14 @@ Learn how to build a complete UVM testbench in 3 weeks
 
 ### week3 day3
   1. scoreboard
-  2. add delay in drivers
+      1. read this [webpage](http://www.testbench.in/UL_11_PHASE_8_SCOREBOARD.html)
+      2. create a scoreboard for your 2 agents
+      3. connect the scoreboard to the monitors in the uvm_env
+  2. add delays in the drivers
+      1. discussion: no delay = lack of coverage
+      2. discussion: rate vs delay
+      3. look at **./verif_utils/verif_utils_delays.sv**
+      4. modify your sequence_items and drivers
 
 ### week3 day4
   - code coverage:
@@ -68,7 +78,7 @@ Learn how to build a complete UVM testbench in 3 weeks
       - costs no time
   - functional coverage
       - makes sure all the expected functional corners were hit
-      - only useful for random simulations
+      - only useful for random simulations (IP level simulations)
   1. use IMC to look at the code/functional coverage
   2. add a covergroup checking the fifo went
       - full->empty->full

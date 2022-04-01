@@ -1,7 +1,7 @@
 # uvm_training
 Learn how to build a complete UVM testbench in 3 weeks
 
-![](https://www.chipverify.com/uvm/uvm-testbench-top)
+![](https://www.chipverify.com/images/uvm/tb_top.png)
 
 # Agenda
 ## I- Prerequisites

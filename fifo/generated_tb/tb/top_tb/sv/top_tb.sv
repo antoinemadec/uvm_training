@@ -32,7 +32,7 @@ module top_tb;
     run_test();
   end
 
-  // dump all waveforms
+  // dump all waveforms (xrun specific)
   initial
   begin
     $shm_open("waves.shm");

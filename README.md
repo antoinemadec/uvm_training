@@ -4,9 +4,9 @@ Learn how to build a complete UVM testbench in 3 weeks
 # Agenda
 ## I- Prerequisites
 ### week1 day1 to day3
-- create a github account: https://github.com
-- brush-up on object oriented programming: https://datascientest.com/programmation-orientee-objet-guide-ultime
-- brush-up on bash scripting: https://www.learnshell.org/
+  - create a [github](https://github.com) account
+  - brush-up on object oriented programming: [try this](https://datascientest.com/programmation-orientee-objet-guide-ultime)
+  - brush-up on bash scripting: [try this](https://www.learnshell.org/)
 
 ## II- Theoretical Training
 ### week1 day4
@@ -43,9 +43,18 @@ Learn how to build a complete UVM testbench in 3 weeks
       - commit + push
 
 ### week3 day2
-  1. interface: use clocking blocks, make sure it compiles
-  2. monitor & driver: fill out run_phase, make sure it compiles
-  3. sequence
+  1. add the following in **top_tb.sv** to dump all wavesforms
+      ```verilog
+      // dump all waveforms (xrun specific)
+      initial
+      begin
+        $shm_open("waves.shm");
+        $shm_probe("ACMTF");
+      end
+      ```
+  2. interface: use clocking blocks, make sure it compiles
+  3. monitor & driver: fill out **do_mon()** and **do_drive()**, make sure it compiles
+  4. sequence
       - definition: "virtual sequence = sequence launching other sequences"
       - discussion: virtual sequence is called from the uvm_env, can also be called from the uvm_test
 

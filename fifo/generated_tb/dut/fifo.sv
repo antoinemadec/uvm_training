@@ -14,7 +14,7 @@ module fifo (
 
   bit [15:0] q16[$];
 
-  assign data_in_rdy = q16.size() != FIFO16_SIZE;
+  assign data_in_rdy = q16.size() <= (FIFO16_SIZE - 2);
   assign data_out_vld = (q16.size() > 0);
   assign data_out = q16[0];
 

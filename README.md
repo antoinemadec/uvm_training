@@ -73,12 +73,17 @@ Learn how to build a complete UVM testbench in 3 weeks
       4. modify your sequence_items and drivers
 
 ### week3 day4
+  - assertions
+      - discussion: immediate vs concurrent assertions
+      - for more info, try [this website](https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-assertions-tutorial)
   - code coverage:
       - makes sure all the DUT was exercised
       - costs no time
   - functional coverage
       - makes sure all the expected functional corners were hit
       - only useful for random simulations (IP level simulations)
+      - for more info, try [this website](https://www.chipverify.com/systemverilog/systemverilog-functional-coverage)
+      - note that concurrent assertions can be used for functional coverage
   1. use IMC to look at the code/functional coverage
   2. add a covergroup checking the fifo went
       - full->empty->full

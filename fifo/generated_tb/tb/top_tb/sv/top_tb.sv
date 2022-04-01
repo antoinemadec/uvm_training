@@ -18,10 +18,15 @@ module top_tb;
 
   initial
   begin
+    bit coverage_enable;
+    coverage_enable = $test$plusargs("coverage_enable") ? 1:0;
+
     // Create and populate top-level configuration object
-    top_env_config = new("top_env_config");
+    top_env_config = new("top_env_config", coverage_enable);
     if ( !top_env_config.randomize() )
       `uvm_error("top_tb", "Failed to randomize top-level configuration object" )
+
+    th.coverage_enable = coverage_enable;
 
     top_env_config.m_fifo_in_config.vif  = th.fifo_in_if_0;
     top_env_config.m_fifo_out_config.vif = th.fifo_out_if_0;

@@ -3,7 +3,7 @@
 # stop on the first error
 set -e
 
-EASIER_UVM_DIR="../../easier_uvm_gen-2017-01-19"
+EASIER_UVM_DIR="../easier_uvm_gen-2017-01-19"
 
 # missing perl libs
 perl_install_path="$(dirname $(which perl))/.."

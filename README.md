@@ -29,20 +29,21 @@ Learn how to build a complete UVM testbench in 3 weeks
 
 ## III- Practical Case Study: Fifo
 ### week3 day1
-  1. create a git repo
-  2. easier UVM
+  1. create a git repo and use **./copy_repo.sh** to copy this repo in you repo
+  2. use **./copy_repo.sh** to copy this repo in your repo
+  3. easier UVM
       1. here is the [reference guide](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/easier-uvm-code-generator/easier-uvm-code-generator-reference-guide/)
-      2. create templates for each agent
+      2. in **./fifo**, create a template for each agent
           - defining a good sequence_item is very important
           - use wires in the interface. This is why: [link1](https://verificationacademy.com/forums/systemverilog/wire-vs.-logic-sv-interface) and [link2](https://blogs.sw.siemens.com/verificationhorizons/2013/05/03/wire-vs-reg/)
               > Any signal with more or the potential for more than one driver should be declared as a wire.
       3. create a pinlist
-      4. generate code
-      5. make sure it compiles
+      4. generate code with **./gen**
+      5. make sure it compiles with **./run**
           - comment out do_mon() in monitors for now
           - comment out do_drive() in drivers for now
       6. look at the code, Q&A
-  3. commit
+  4. commit
       - generate a .gitignore
       - commit + push
 

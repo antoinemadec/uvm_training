@@ -43,7 +43,7 @@ Learn how to build a complete UVM testbench in 3 weeks
 
 ## III- Practical Case Study: Fifo
 ### week3 day1
-  1. create a git repo and use **./copy_repo.sh** to copy this repo in you repo
+  1. create a **private** git repo
   2. use **./copy_repo.sh** to copy this repo in your repo
   3. easier UVM
       1. here is the [reference guide](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/easier-uvm-code-generator/easier-uvm-code-generator-reference-guide/)

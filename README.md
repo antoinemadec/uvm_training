@@ -13,18 +13,32 @@ Learn how to build a complete UVM testbench in 3 weeks
 
 ## II- Theoretical Training
 ### week1 day4
+  - 00_OOP
+  - 01_intro_verif_uvm
+  - 02_uvm_xaction_constraints_messsaging_uvm_factory
 
 ### week1 day5
+  - 2bis_interface
+  - 03_driver_sequencer
 
 ### week2 day1
+  - 03_driver_sequncer
+  - 04_uvm_monitor_coverage
 
 ### week2 day2
+  - 05_uvm_agent_et_env
+  - 06_uvm_scoreboard
+  - 07_configuration_class
 
 ### week2 day3
+  - 08_virtual_sequencer
+  - 09_uvm_test_and_top_testbench
 
 ### week2 day4
+  - 10_SVA_assertions
 
 ### week2 day5
+  - Q&A
 
 
 ## III- Practical Case Study: Fifo

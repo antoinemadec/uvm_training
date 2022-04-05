@@ -108,5 +108,10 @@ Learn how to build a complete UVM testbench in 3 weeks
 ### week3 day5
   1. resources & discussion
       - pipelined protocols
+          - use [get() and put()](https://www.chipverify.com/uvm/driver-using-get-and-put) instead of [get_next_item() and item_done()](https://www.chipverify.com/uvm/uvm-using-get-next-item)
+          - see example [here](https://github.com/antoinemadec/doc/blob/master/uvm.txt#L317)
       - override
+          - usually done in the uvm_test
+          - can override by type or by instance
+          - can be used for error injection etc
   2. Q&A

@@ -51,6 +51,13 @@ Learn how to build a complete UVM testbench in 3 weeks
           - defining a good sequence_item is very important
           - use wires in the interface. This is why: [link1](https://verificationacademy.com/forums/systemverilog/wire-vs.-logic-sv-interface) and [link2](https://blogs.sw.siemens.com/verificationhorizons/2013/05/03/wire-vs-reg/)
               > Any signal with more or the potential for more than one driver should be declared as a wire.
+          - add the following in your agent's templates
+              ```sh
+              # needed to have better driver/monitor template
+              driver_inc = dummy.sv inline
+              monitor_inc = dummy.sv inline
+
+              ```
       3. create a pinlist
       4. generate code with **./gen**
       5. make sure it compiles with **./run**
@@ -71,7 +78,7 @@ Learn how to build a complete UVM testbench in 3 weeks
         $shm_probe("ACMTF");
       end
       ```
-  2. interface: use clocking blocks, make sure it compiles
+  2. interface: use [clocking blocks](https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-clocking-tutorial), make sure it compiles
   3. monitor & driver: fill out **do_mon()** and **do_drive()**, make sure it compiles
   4. sequence
       - definition: "virtual sequence = sequence launching other sequences"

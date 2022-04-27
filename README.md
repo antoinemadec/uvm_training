@@ -107,8 +107,9 @@ Learn how to build a complete UVM testbench in 3 weeks
       - only useful for random simulations (IP level simulations)
       - for more info, try [this website](https://www.chipverify.com/systemverilog/systemverilog-functional-coverage)
       - note that concurrent assertions can be used for functional coverage
-  1. use IMC to look at the code/functional coverage
-  2. add a covergroup checking the fifo went
+  1. use **run_cov** to run your simulation with coverage
+  2. use IMC to look at the code/functional coverage
+  3. add a covergroup checking the fifo went
       - full->empty->full
       - empty->full->empty
 

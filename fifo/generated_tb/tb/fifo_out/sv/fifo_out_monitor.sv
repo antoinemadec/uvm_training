@@ -38,11 +38,11 @@ endtask : run_phase
 
 task fifo_out_monitor::do_mon();
   forever begin
-    @(vif.cb);
-    while (!(vif.cb.data_out_vld === 1'b1 && vif.cb.data_out_rdy === 1'b1)) begin
-      @(vif.cb);
+    @(vif.cb_mon);
+    while (!(vif.cb_mon.data_out_vld === 1'b1 && vif.cb_mon.data_out_rdy === 1'b1)) begin
+      @(vif.cb_mon);
     end
-    m_trans.data = vif.cb.data_out;
+    m_trans.data = vif.cb_mon.data_out;
     analysis_port.write(m_trans);
   end
 endtask : do_mon

@@ -13,11 +13,17 @@ interface fifo_out_if();
   wire data_out_vld;
   wire data_out_rdy;
 
-  clocking cb @(posedge clk);
-    inout data_out;
-    inout data_out_vld;
-    inout data_out_rdy;
-  endclocking : cb
+  clocking cb_drv @(posedge clk);
+    input data_out;
+    input data_out_vld;
+    output data_out_rdy;
+  endclocking : cb_drv
+
+  clocking cb_mon @(posedge clk);
+    input data_out;
+    input data_out_vld;
+    input data_out_rdy;
+  endclocking : cb_mon
 
 endinterface : fifo_out_if
 

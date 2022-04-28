@@ -26,9 +26,9 @@ endfunction : new
 task fifo_in_driver::run_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "run_phase", UVM_HIGH)
 
-  vif.cb.data_in <= 'hx;
-  vif.cb.data_in_vld <= 1'b0;
-  @(vif.cb);
+  vif.cb_drv.data_in <= 'hx;
+  vif.cb_drv.data_in_vld <= 1'b0;
+  @(vif.cb_drv);
 
   forever
   begin
@@ -42,16 +42,16 @@ endtask : run_phase
 
 task fifo_in_driver::do_drive();
   repeat (get_delay(req.rate)) begin
-    @(vif.cb);
+    @(vif.cb_drv);
   end
-  vif.cb.data_in <= req.data;
-  vif.cb.data_in_vld <= 1'b1;
-  @(vif.cb);
+  vif.cb_drv.data_in <= req.data;
+  vif.cb_drv.data_in_vld <= 1'b1;
+  @(vif.cb_drv);
   while (vif.data_in_rdy !== 1) begin
-    @(vif.cb);
+    @(vif.cb_drv);
   end
-  vif.cb.data_in <= 'hx;
-  vif.cb.data_in_vld <= 1'b0;
+  vif.cb_drv.data_in <= 'hx;
+  vif.cb_drv.data_in_vld <= 1'b0;
 endtask : do_drive
 
 `endif // FIFO_IN_DRIVER_SV

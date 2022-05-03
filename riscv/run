@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -e
+
+TOP_DIR="../riscv-simple-sv"
+
+RTL_DIR="$TOP_DIR/core"
+TEST_DIR="$TOP_DIR/tests"
+TB_DIR="$TOP_DIR/testbench"
+
+
+#--------------------------------------------------------------
+# functions
+#--------------------------------------------------------------
+error() {
+  >&2 echo "ERROR: $@"
+  exit 1
+}
+
+mkdir -p output
+cd output
+
+xrun -sv                           \
+  -incdir $TB_DIR                  \
+  -incdir $RTL_DIR/common/         \
+  -incdir $RTL_DIR/singlecycle/    \
+  $RTL_DIR/common/*                \
+  $RTL_DIR/singlecycle/*           \
+  +text_file=$TEST_DIR/add.text.vh \
+  +data_file=$TEST_DIR/add.data.vh

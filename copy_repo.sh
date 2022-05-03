@@ -27,6 +27,7 @@ if ! [ -d "$dest_dir" ]; then
 fi
 
 rsync -avzph $(dirname $0)/ $dest_dir \
+  --exclude "riscv"                   \
   --exclude "generated_tb"            \
   --exclude ".git*"                   \
   --exclude "fifo_*.tpl"              \

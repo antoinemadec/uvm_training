@@ -18,7 +18,10 @@ module regfile (
 );
 
     // 32 registers of 32-bit width
-    logic [31:0] register [0:31];
+  // FIXME: ugly hack to avoid getting X's when compiling C
+  // no X's when using provided assembly files
+  // must be a compiler/sw issue
+    bit [31:0] register [0:31];
    
     // Read ports for rs1 and rs2
     assign rs1_data = register[rs1_address];

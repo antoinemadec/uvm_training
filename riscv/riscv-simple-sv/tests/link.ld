@@ -34,6 +34,13 @@ SECTIONS
     KEEP (*(SORT_NONE(.fini)))
   } >flash AT>flash :flash
  
+  .spy            :
+  {
+    . = ORIGIN(ram);
+    KEEP(*(.spy))
+    . = . + 4*5;
+  } >ram AT>ram :ram
+
   .rodata         :
   {
     *(.rdata)

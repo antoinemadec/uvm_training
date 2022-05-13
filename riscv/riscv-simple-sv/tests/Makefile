@@ -5,13 +5,17 @@ SREC_CAT=srec_cat
 OBJCOPY=riscv64-unknown-elf-objcopy
 CFLAGS=-mabi=ilp32 -march=rv32i
 LDFLAGS=-Tlink.ld -melf32lriscv
+CSRCS=$(wildcard *.c)
 SRCS=$(wildcard *.S)
 OBJS=$(SRCS:.S=.o)
 ELFS=$(SRCS:.S=.elf)
-BINS=$(SRCS:.S=.text.vh) $(SRCS:.S=.data.vh)
+BINS=$(SRCS:.S=.text.bin) $(SRCS:.S=.data.bin)
 VHS=$(SRCS:.S=.text.vh) $(SRCS:.S=.data.vh)
 
-all: ${VHS}
+all: $(CSRCS:.c=.S) ${VHS}
+
+%.S: %.c
+	${CC} -c ${CFLAGS} -S -o $@ $<
 
 %.o: %.S test_macros.h riscv_test.h
 	${CC} -c ${CFLAGS} -o $@ $<

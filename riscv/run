@@ -21,6 +21,9 @@ error() {
 mkdir -p output
 cd output
 
+test_name="$1"
+[ "$test_name" == "" ] && test_name="toto"
+
 xrun -q                                               \
   -vtimescale 1ns/1ps                                 \
   -uvmhome ${IUS_HOME}/tools/methodology/UVM/CDNS-1.2 \
@@ -35,12 +38,12 @@ xrun -q                                               \
   -incdir $RTL_DIR/singlecycle/                       \
   $RTL_DIR/common/*                                   \
   $RTL_DIR/singlecycle/*                              \
-  +text_file=$TEST_DIR/add.text.vh                    \
-  +data_file=$TEST_DIR/add.data.vh                    \
+  +text_file=$TEST_DIR/$test_name.text.vh             \
+  +data_file=$TEST_DIR/$test_name.data.vh             \
   ../tb/toplevel_probe/sv/toplevel_probe_pkg.sv       \
   ../tb/toplevel_probe/sv/toplevel_probe_if.sv        \
   ../tb/top/sv/top_pkg.sv                             \
   ../tb/top_test/sv/top_test_pkg.sv                   \
   ../tb/top_tb/sv/top_th.sv                           \
   ../tb/top_tb/sv/top_tb.sv                           \
-  +UVM_TESTNAME=top_test  $* 
+  +UVM_TESTNAME=top_test

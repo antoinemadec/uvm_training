@@ -29,7 +29,7 @@ xrun -q                                               \
   -uvmhome ${IUS_HOME}/tools/methodology/UVM/CDNS-1.2 \
   -access +rw                                         \
   +incdir+../tb/include                               \
-  +incdir+../tb/toplevel_probe/sv                     \
+  +incdir+../tb/uvm_server/sv                         \
   +incdir+../tb/top/sv                                \
   +incdir+../tb/top_test/sv                           \
   +incdir+../tb/top_tb/sv                             \
@@ -40,8 +40,8 @@ xrun -q                                               \
   $RTL_DIR/singlecycle/*                              \
   +text_file=$TEST_DIR/$test_name.text.vh             \
   +data_file=$TEST_DIR/$test_name.data.vh             \
-  ../tb/toplevel_probe/sv/toplevel_probe_pkg.sv       \
-  ../tb/toplevel_probe/sv/toplevel_probe_if.sv        \
+  ../tb/uvm_server/sv/uvm_server_pkg.sv               \
+  ../tb/uvm_server/sv/uvm_server_if.sv                \
   ../tb/top/sv/top_pkg.sv                             \
   ../tb/top_test/sv/top_test_pkg.sv                   \
   ../tb/top_tb/sv/top_th.sv                           \

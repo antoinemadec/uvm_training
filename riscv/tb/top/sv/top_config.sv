@@ -5,7 +5,7 @@ class top_config extends uvm_object;
 
   // Do not register config class with the factory
 
-  rand toplevel_probe_config  m_toplevel_probe_config;
+  rand uvm_server_config  m_uvm_server_config;
 
   // You can insert variables here by setting config_var in file common.tpl
 
@@ -17,10 +17,7 @@ endclass : top_config
 function top_config::new(string name = "");
   super.new(name);
 
-  m_toplevel_probe_config                 = new("m_toplevel_probe_config");
-  m_toplevel_probe_config.is_active       = UVM_ACTIVE;                    
-  m_toplevel_probe_config.checks_enable   = 1;                             
-  m_toplevel_probe_config.coverage_enable = 1;                             
+  m_uvm_server_config                 = new("m_uvm_server_config");
 
 endfunction : new
 

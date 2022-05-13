@@ -7,7 +7,7 @@ package top_test_pkg;
 
   import uvm_pkg::*;
 
-  import toplevel_probe_pkg::*;
+  import uvm_server_pkg::*;
   import top_pkg::*;
 
   `include "top_test.sv"

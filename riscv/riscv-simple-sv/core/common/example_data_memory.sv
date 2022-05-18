@@ -16,7 +16,9 @@ module example_data_memory (
 );
 
     (* nomem2reg *)
-    logic [31:0] mem[0:2**(`DATA_BITS-2)-1];
+  // FIXME: stack is in 0xffff_ff.. instead of 0x8002_00..
+    // logic [31:0] mem[0:2**(`DATA_BITS-2)-1];
+    logic [31:0] mem[int];
 
     assign q = mem[address];
 

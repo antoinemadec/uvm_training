@@ -1,7 +1,5 @@
 module top_th;
 
-  `define UVM_SERVER_MEM top_tb.th.toplevel.data_memory_bus
-
   timeunit      1ns;
   timeprecision 1ps;
 

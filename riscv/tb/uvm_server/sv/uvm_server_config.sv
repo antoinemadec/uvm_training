@@ -7,7 +7,11 @@ class uvm_server_config extends uvm_object;
 
   virtual uvm_server_if    vif;
                   
-  // You can insert variables here by setting config_var in file ./uvm_server.tpl
+  bit [31:0] cmd_address              = 'h80000000;
+  bit [31:0] fifo_cmd_input_address   = 'h80000004;
+  bit [31:0] fifo_cmd_output_address  = 'h80000008;
+  bit [31:0] fifo_data_to_uvm_address = 'h8000000c;
+  bit [31:0] fifo_data_to_sw_address  = 'h80000010;
 
   extern function new(string name = "");
 

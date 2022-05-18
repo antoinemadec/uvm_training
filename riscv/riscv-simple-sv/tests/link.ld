@@ -21,6 +21,7 @@ SECTIONS
  
   .init           :
   {
+    KEEP(*(.text.main))
     KEEP (*(SORT_NONE(.init)))
   } >flash AT>flash :flash
  
@@ -34,10 +35,10 @@ SECTIONS
     KEEP (*(SORT_NONE(.fini)))
   } >flash AT>flash :flash
  
-  .spy            :
+  .uvm_server            :
   {
     . = ORIGIN(ram);
-    KEEP(*(.spy))
+    KEEP(*(.uvm_server))
     . = . + 4*5;
   } >ram AT>ram :ram
 

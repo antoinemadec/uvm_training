@@ -1,6 +1,8 @@
 `ifndef UVM_SERVER_IF_SV
 `define UVM_SERVER_IF_SV
 
+  `define UVM_SERVER_MEM top_tb.th.toplevel.data_memory_bus
+
 interface uvm_server_if(); 
 
   timeunit      1ns;
@@ -26,6 +28,10 @@ interface uvm_server_if();
     input wdata;
     input byteen;
   endclocking : cb
+
+  function void backdoor_write(bit [31:0] addr, bit [31:0] wdata);
+    `UVM_SERVER_MEM.data_memory.mem[addr[16:2]] = wdata;
+  endfunction : backdoor_write
 
 endinterface : uvm_server_if
 

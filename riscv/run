@@ -24,6 +24,8 @@ cd output
 test_name="$1"
 [ "$test_name" == "" ] && test_name="toto"
 
+make -C $TEST_DIR
+
 xrun -q                                               \
   -vtimescale 1ns/1ps                                 \
   -uvmhome ${IUS_HOME}/tools/methodology/UVM/CDNS-1.2 \

@@ -40,7 +40,17 @@ task top_test::run_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "running sequence", UVM_LOW);
   #1000;
   `uvm_info(get_type_name(), "sequence done", UVM_LOW);
+  m_env.m_uvm_server.fifo_data_to_sw.push_back(32'hdeadbeef);
+  m_env.m_uvm_server.fifo_data_to_sw.push_back(32'hcafedeca);
+  `uvm_info(get_type_name(), "data pushed", UVM_LOW);
   m_event_to_sw[1].trigger();
+  m_event_to_uvm[0].wait_on();
+  m_event_to_uvm[0].reset();
+  while (m_env.m_uvm_server.fifo_data_to_uvm.size() != 0) begin
+    bit [31:0] data_to_uvm;
+    data_to_uvm = m_env.m_uvm_server.fifo_data_to_uvm.pop_front();
+    `uvm_info(get_type_name(), $sformatf("data_to_uvm = 0x%0x", data_to_uvm), UVM_LOW);
+  end
 endtask : run_phase
 
 `endif // TOP_TEST_SV

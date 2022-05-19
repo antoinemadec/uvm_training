@@ -35,6 +35,7 @@ class uvm_server extends uvm_component;
   extern task process_fifo_cmd_output(uvm_server_tx tx);
   extern task process_fifo_data_to_uvm(uvm_server_tx tx);
   extern task process_fifo_data_to_sw(uvm_server_tx tx);
+  extern task update_data_to_sw(bit [31:0] fifo_to_sw_address, ref bit [31:0] fifo_to_sw[$]);
 
   extern task check_max_event_idx(bit [23:0] event_idx);
 endclass : uvm_server 
@@ -85,6 +86,8 @@ task uvm_server::run_phase(uvm_phase phase);
         m_config.fifo_data_to_sw_address:  process_fifo_data_to_sw(tx);
       endcase
     end
+    update_data_to_sw(m_config.fifo_data_to_sw_address, fifo_data_to_sw);
+    update_data_to_sw(m_config.fifo_cmd_output_address, fifo_cmd_output);
     wait(m_quit);
   join_any
   phase.drop_objection(this);
@@ -148,12 +151,13 @@ endtask : process_fifo_cmd_input
 
 
 task uvm_server::process_fifo_cmd_output(uvm_server_tx tx);
-  bit [31:0] cmd_output;
   if (!tx.rwb) begin
     `uvm_fatal(get_type_name(), "illegal write in SW in fifo_cmd_output")
   end
-  cmd_output = fifo_cmd_output.pop_front();
-  // TODO: write cmd_output in SW mem
+  if (fifo_cmd_output.size() == 0) begin
+    `uvm_fatal(get_type_name(), "UVM has no cmd output to transmit to SW")
+  end
+  void'(fifo_cmd_output.pop_front());
 endtask : process_fifo_cmd_output
 
 
@@ -161,18 +165,34 @@ task uvm_server::process_fifo_data_to_uvm(uvm_server_tx tx);
   if (tx.rwb) begin
     `uvm_fatal(get_type_name(), "illegal read from SW in fifo_data_to_uvm")
   end
-  fifo_cmd_input.push_back(tx.data);
+  fifo_data_to_uvm.push_back(tx.data);
 endtask : process_fifo_data_to_uvm
 
 
 task uvm_server::process_fifo_data_to_sw(uvm_server_tx tx);
-  bit [31:0] data_to_sw;
   if (!tx.rwb) begin
     `uvm_fatal(get_type_name(), "illegal write in SW in fifo_data_to_sw")
   end
-  data_to_sw = fifo_cmd_output.pop_front();
-  // TODO: write data_to_sw in SW mem
+  if (fifo_data_to_sw.size() == 0) begin
+    `uvm_fatal(get_type_name(), "UVM has no data to transmit to SW")
+  end
+  void'(fifo_data_to_sw.pop_front());
 endtask : process_fifo_data_to_sw
+
+
+task uvm_server::update_data_to_sw(bit [31:0] fifo_to_sw_address, ref bit [31:0] fifo_to_sw[$]);
+  int fifo_to_sw_prev_size = 0;
+  forever begin
+    @(vif.cb);
+    if (fifo_to_sw.size() != fifo_to_sw_prev_size) begin
+      // TODO: only when 0 to 1 or size is decreasing
+      if (fifo_to_sw.size() != 0) begin
+        vif.backdoor_write(fifo_to_sw_address, fifo_to_sw[0]);
+      end
+      fifo_to_sw_prev_size = fifo_to_sw.size();
+    end
+  end
+endtask : update_data_to_sw
 
 
 task uvm_server::check_max_event_idx(bit [23:0] event_idx);

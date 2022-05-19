@@ -8,6 +8,8 @@ interface uvm_server_if();
   timeunit      1ns;
   timeprecision 1ps;
 
+  `include "uvm_macros.svh"
+  import uvm_pkg::*;
   import uvm_server_pkg::*;
 
   wire clock;
@@ -31,6 +33,7 @@ interface uvm_server_if();
 
   function void backdoor_write(bit [31:0] addr, bit [31:0] wdata);
     `UVM_SERVER_MEM.data_memory.mem[addr[16:2]] = wdata;
+    `uvm_info("uvm_server_if", $sformatf("backdoor_write 0x%x -> [0x%x]", wdata, addr), UVM_DEBUG);
   endfunction : backdoor_write
 
 endinterface : uvm_server_if

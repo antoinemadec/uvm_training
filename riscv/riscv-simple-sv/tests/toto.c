@@ -14,6 +14,7 @@ static volatile spy_st uvm_server __attribute__ ((section (".uvm_server")));
 void uvm_server_quit(void);
 void uvm_server_gen_event(uint32_t event_idx);
 void uvm_server_wait_event(uint32_t event_idx);
+/* void uvm_server_wait_event(uint32_t event_idx); */
 
 
 void uvm_server_quit()

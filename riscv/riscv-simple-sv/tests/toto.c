@@ -1,11 +1,11 @@
 #include <stdint.h>
 
+#define UVM_SERVER_FIFO_NB 2
+
 typedef struct {
   uint32_t cmd;
-  uint32_t fifo_cmd_input;   // write: push in   fifo_cmd_input
-  uint32_t fifo_cmd_output;  // read:  pull from fifo_cmd_output
-  uint32_t fifo_data_to_uvm; // write: push in   fifo_data_to_uvm
-  uint32_t fifo_data_to_sw;  // read:  pull from fifo_data_to_sw
+  uint32_t fifo_data_to_uvm[UVM_SERVER_FIFO_NB]; // write: push in   fifo_data_to_uvm[k]
+  uint32_t fifo_data_to_sw[UVM_SERVER_FIFO_NB];  // read:  pull from fifo_data_to_sw[k]
 } spy_st;
 
 static volatile spy_st uvm_server __attribute__ ((section (".uvm_server")));
@@ -47,17 +47,15 @@ int main(int argc, char *argv[])
   uint32_t data2;
 
   /* uvm_server.cmd = 0; */
+
   uvm_server_gen_event(16);
 
   uvm_server_wait_event(1);
-  data0 = uvm_server.fifo_data_to_sw;
-  data1 = uvm_server.fifo_data_to_sw;
-  uvm_server.fifo_data_to_uvm = data0;
-  uvm_server.fifo_data_to_uvm = data1;
+  data0 = uvm_server.fifo_data_to_sw[0];
+  data1 = uvm_server.fifo_data_to_sw[0];
+  uvm_server.fifo_data_to_uvm[0] = data0;
+  uvm_server.fifo_data_to_uvm[0] = data1;
   uvm_server_gen_event(0);
-
-  /* uvm_server.fifo_cmd_input = 0xcafedeca; */
-  /* toto = uvm_server.fifo_cmd_output; */
 
   uvm_server_quit();
   return 0;

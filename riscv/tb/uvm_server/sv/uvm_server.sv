@@ -5,19 +5,19 @@ class uvm_server extends uvm_component;
 
   `uvm_component_utils(uvm_server)
 
+  // external
+  uvm_event               event_to_uvm[UVM_SERVER_EVENT_NB];
+  uvm_event               event_to_sw[UVM_SERVER_EVENT_NB];
+  bit [31:0]              fifo_data_to_uvm[UVM_SERVER_FIFO_NB][$];
+  bit [31:0]              fifo_data_to_sw[UVM_SERVER_FIFO_NB][$];
+
   uvm_tlm_analysis_fifo#(uvm_server_tx) m_mon_fifo;
 
   uvm_server_config       m_config;
   uvm_server_monitor      m_monitor;
   virtual uvm_server_if   vif;
 
-  uvm_event               m_event_to_uvm[UVM_SERVER_EVENT_NB];
-  uvm_event               m_event_to_sw[UVM_SERVER_EVENT_NB];
   bit                     m_quit = 0;
-  bit [31:0]              fifo_cmd_input[$];
-  bit [31:0]              fifo_cmd_output[$];
-  bit [31:0]              fifo_data_to_uvm[$];
-  bit [31:0]              fifo_data_to_sw[$];
 
   extern function new(string name, uvm_component parent);
 
@@ -25,18 +25,16 @@ class uvm_server extends uvm_component;
   extern function void connect_phase(uvm_phase phase);
   extern task run_phase(uvm_phase phase);
 
+  extern task process_ram_access();
   extern task process_cmd(uvm_server_tx tx);
   extern task process_cmd_print(uvm_server_tx tx);
   extern task process_cmd_gen_event(bit [23:0] event_idx);
   extern task process_cmd_wait_event(bit [23:0] event_idx);
   extern task process_cmd_quit(uvm_server_tx tx);
-
-  extern task process_fifo_cmd_input(uvm_server_tx tx);
-  extern task process_fifo_cmd_output(uvm_server_tx tx);
-  extern task process_fifo_data_to_uvm(uvm_server_tx tx);
-  extern task process_fifo_data_to_sw(uvm_server_tx tx);
-  extern task update_data_to_sw(bit [31:0] fifo_to_sw_address, ref bit [31:0] fifo_to_sw[$]);
-
+  extern task process_fifo_data_to_uvm(uvm_server_tx tx, int fifo_idx);
+  extern task process_fifo_data_to_sw(uvm_server_tx tx, int fifo_idx);
+  extern task update_data_to_sw();
+  extern task update_data_to_sw_core(int fifo_idx);
   extern task check_max_event_idx(bit [23:0] event_idx);
 endclass : uvm_server 
 
@@ -45,9 +43,9 @@ function  uvm_server::new(string name, uvm_component parent);
   uvm_event_pool event_pool = uvm_event_pool::get_global_pool();
   super.new(name, parent);
   m_mon_fifo = new("m_mon_fifo", this);
-  foreach (m_event_to_uvm[i]) begin
-    m_event_to_uvm[i] = event_pool.get($sformatf("uvm_server_to_uvm_%d", i));
-    m_event_to_sw[i] = event_pool.get($sformatf("uvm_server_to_sw_%d", i));
+  foreach (event_to_uvm[i]) begin
+    event_to_uvm[i] = event_pool.get($sformatf("uvm_server_to_uvm_%d", i));
+    event_to_sw[i] = event_pool.get($sformatf("uvm_server_to_sw_%d", i));
   end
 endfunction : new
 
@@ -74,24 +72,34 @@ endfunction : connect_phase
 task uvm_server::run_phase(uvm_phase phase);
   phase.raise_objection(this);
   fork
-    forever begin
-      uvm_server_tx tx;
-      m_mon_fifo.get(tx);
-      `uvm_info(get_type_name(), {"received new packet from monitor: ", tx.sprint()}, UVM_DEBUG)
-      case (tx.addr)
-        m_config.cmd_address:              process_cmd(tx);
-        m_config.fifo_cmd_input_address:   process_fifo_cmd_input(tx);
-        m_config.fifo_cmd_output_address:  process_fifo_cmd_output(tx);
-        m_config.fifo_data_to_uvm_address: process_fifo_data_to_uvm(tx);
-        m_config.fifo_data_to_sw_address:  process_fifo_data_to_sw(tx);
-      endcase
-    end
-    update_data_to_sw(m_config.fifo_data_to_sw_address, fifo_data_to_sw);
-    update_data_to_sw(m_config.fifo_cmd_output_address, fifo_cmd_output);
+    update_data_to_sw();
+    process_ram_access();
     wait(m_quit);
   join_any
   phase.drop_objection(this);
 endtask : run_phase
+
+
+task uvm_server::process_ram_access();
+    forever begin
+      uvm_server_tx tx;
+      m_mon_fifo.get(tx);
+      `uvm_info(get_type_name(), {"received new packet from monitor: ", tx.sprint()}, UVM_DEBUG)
+      if (tx.addr == m_config.cmd_address) begin
+        process_cmd(tx);
+      end
+      else begin
+        for (int i = 0; i < UVM_SERVER_FIFO_NB; i++) begin
+          if (tx.addr == m_config.fifo_data_to_uvm_address[i]) begin
+            process_fifo_data_to_uvm(tx, i);
+          end
+          if (tx.addr == m_config.fifo_data_to_sw_address[i]) begin
+            process_fifo_data_to_sw(tx, i);
+          end
+        end
+      end
+    end
+endtask : process_ram_access
 
 
 task uvm_server::process_cmd(uvm_server_tx tx);
@@ -120,7 +128,7 @@ endtask : process_cmd_print
 task uvm_server::process_cmd_gen_event(bit [23:0] event_idx);
   `uvm_info(get_type_name(), $sformatf("process_cmd_gen_event(%0d)", event_idx), UVM_DEBUG)
   check_max_event_idx(event_idx);
-  m_event_to_uvm[event_idx].trigger();
+  event_to_uvm[event_idx].trigger();
 endtask : process_cmd_gen_event
 
 
@@ -128,8 +136,8 @@ task uvm_server::process_cmd_wait_event(bit [23:0] event_idx);
   `uvm_info(get_type_name(), $sformatf("process_cmd_wait_event(%0d) start", event_idx), UVM_DEBUG)
   check_max_event_idx(event_idx);
 
-  m_event_to_sw[event_idx].wait_on();
-  m_event_to_sw[event_idx].reset();
+  event_to_sw[event_idx].wait_on();
+  event_to_sw[event_idx].reset();
   vif.backdoor_write(m_config.cmd_address, 0);
 
   `uvm_info(get_type_name(), $sformatf("process_cmd_wait_event(%0d) done", event_idx), UVM_DEBUG)
@@ -142,57 +150,49 @@ task uvm_server::process_cmd_quit(uvm_server_tx tx);
 endtask : process_cmd_quit
 
 
-task uvm_server::process_fifo_cmd_input(uvm_server_tx tx);
+task uvm_server::process_fifo_data_to_uvm(uvm_server_tx tx, int fifo_idx);
   if (tx.rwb) begin
-    `uvm_fatal(get_type_name(), "illegal read from SW in fifo_cmd_input")
+    `uvm_fatal(get_type_name(), $sformatf("illegal read from SW in fifo_data_to_uvm[%0d]", fifo_idx))
   end
-  fifo_cmd_input.push_back(tx.data);
-endtask : process_fifo_cmd_input
-
-
-task uvm_server::process_fifo_cmd_output(uvm_server_tx tx);
-  if (!tx.rwb) begin
-    `uvm_fatal(get_type_name(), "illegal write in SW in fifo_cmd_output")
-  end
-  if (fifo_cmd_output.size() == 0) begin
-    `uvm_fatal(get_type_name(), "UVM has no cmd output to transmit to SW")
-  end
-  void'(fifo_cmd_output.pop_front());
-endtask : process_fifo_cmd_output
-
-
-task uvm_server::process_fifo_data_to_uvm(uvm_server_tx tx);
-  if (tx.rwb) begin
-    `uvm_fatal(get_type_name(), "illegal read from SW in fifo_data_to_uvm")
-  end
-  fifo_data_to_uvm.push_back(tx.data);
+  fifo_data_to_uvm[fifo_idx].push_back(tx.data);
 endtask : process_fifo_data_to_uvm
 
 
-task uvm_server::process_fifo_data_to_sw(uvm_server_tx tx);
+task uvm_server::process_fifo_data_to_sw(uvm_server_tx tx, int fifo_idx);
   if (!tx.rwb) begin
-    `uvm_fatal(get_type_name(), "illegal write in SW in fifo_data_to_sw")
+    `uvm_fatal(get_type_name(), $sformatf("illegal write in SW in fifo_data_to_sw[%0d]", fifo_idx))
   end
-  if (fifo_data_to_sw.size() == 0) begin
+  if (fifo_data_to_sw[fifo_idx].size() == 0) begin
     `uvm_fatal(get_type_name(), "UVM has no data to transmit to SW")
   end
-  void'(fifo_data_to_sw.pop_front());
+  void'(fifo_data_to_sw[fifo_idx].pop_front());
 endtask : process_fifo_data_to_sw
 
 
-task uvm_server::update_data_to_sw(bit [31:0] fifo_to_sw_address, ref bit [31:0] fifo_to_sw[$]);
+task uvm_server::update_data_to_sw();
+  for (int i = 0; i < UVM_SERVER_FIFO_NB; i++) begin
+    fork
+      automatic int auto_i = i;
+      update_data_to_sw_core(auto_i);
+    join_none
+  end
+  wait fork;
+endtask : update_data_to_sw
+
+
+task uvm_server::update_data_to_sw_core(int fifo_idx);
   int fifo_to_sw_prev_size = 0;
   forever begin
     @(vif.cb);
-    if (fifo_to_sw.size() != fifo_to_sw_prev_size) begin
+    if (fifo_data_to_sw[fifo_idx].size() != fifo_to_sw_prev_size) begin
       // TODO: only when 0 to 1 or size is decreasing
-      if (fifo_to_sw.size() != 0) begin
-        vif.backdoor_write(fifo_to_sw_address, fifo_to_sw[0]);
+      if (fifo_data_to_sw[fifo_idx].size() != 0) begin
+        vif.backdoor_write(m_config.fifo_data_to_sw_address[fifo_idx], fifo_data_to_sw[fifo_idx][0]);
       end
-      fifo_to_sw_prev_size = fifo_to_sw.size();
+      fifo_to_sw_prev_size = fifo_data_to_sw[fifo_idx].size();
     end
   end
-endtask : update_data_to_sw
+endtask : update_data_to_sw_core
 
 
 task uvm_server::check_max_event_idx(bit [23:0] event_idx);

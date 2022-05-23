@@ -39,7 +39,7 @@ SECTIONS
   {
     . = ORIGIN(ram);
     KEEP(*(.uvm_server))
-    . = . + 4*5;
+    . = . + 4*6;
   } >ram AT>ram :ram
 
   .rodata         :

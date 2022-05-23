@@ -34,7 +34,6 @@ class uvm_server extends uvm_component;
   extern task process_fifo_data_to_uvm(uvm_server_tx tx, int fifo_idx);
   extern task process_fifo_data_to_sw(uvm_server_tx tx, int fifo_idx);
   extern task update_data_to_sw();
-  extern task update_data_to_sw_core(int fifo_idx);
   extern task check_max_event_idx(bit [23:0] event_idx);
 endclass : uvm_server 
 
@@ -170,29 +169,19 @@ endtask : process_fifo_data_to_sw
 
 
 task uvm_server::update_data_to_sw();
-  for (int i = 0; i < UVM_SERVER_FIFO_NB; i++) begin
-    fork
-      automatic int auto_i = i;
-      update_data_to_sw_core(auto_i);
-    join_none
-  end
-  wait fork;
-endtask : update_data_to_sw
-
-
-task uvm_server::update_data_to_sw_core(int fifo_idx);
-  int fifo_to_sw_prev_size = 0;
   forever begin
+    bit [31:0] fifo_data_to_sw_empty;
     @(vif.cb);
-    if (fifo_data_to_sw[fifo_idx].size() != fifo_to_sw_prev_size) begin
-      // TODO: only when 0 to 1 or size is decreasing
-      if (fifo_data_to_sw[fifo_idx].size() != 0) begin
-        vif.backdoor_write(m_config.fifo_data_to_sw_address[fifo_idx], fifo_data_to_sw[fifo_idx][0]);
+    for (int i = 0; i < UVM_SERVER_FIFO_NB; i++) begin
+      fifo_data_to_sw_empty[i] = 1'b1;
+      if (fifo_data_to_sw[i].size() != 0) begin
+        fifo_data_to_sw_empty[i] = 1'b0;
+        vif.backdoor_write(m_config.fifo_data_to_sw_address[i], fifo_data_to_sw[i][0]);
       end
-      fifo_to_sw_prev_size = fifo_data_to_sw[fifo_idx].size();
     end
+    vif.backdoor_write(m_config.fifo_data_to_sw_empty_address, fifo_data_to_sw_empty);
   end
-endtask : update_data_to_sw_core
+endtask : update_data_to_sw
 
 
 task uvm_server::check_max_event_idx(bit [23:0] event_idx);

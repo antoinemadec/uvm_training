@@ -10,6 +10,7 @@ class uvm_server_config extends uvm_object;
   bit [31:0] cmd_address;
   bit [31:0] fifo_data_to_uvm_address[UVM_SERVER_FIFO_NB];
   bit [31:0] fifo_data_to_sw_address[UVM_SERVER_FIFO_NB];
+  bit [31:0] fifo_data_to_sw_empty_address;
 
   extern function new(string name = "");
 
@@ -23,6 +24,7 @@ function uvm_server_config::new(string name = "");
     fifo_data_to_uvm_address[i] = 'h80000004 + i*4;
     fifo_data_to_sw_address[i]  = 'h80000004 + (UVM_SERVER_FIFO_NB + i)*4;
   end
+  fifo_data_to_sw_empty_address = 'h80000004 + 2*UVM_SERVER_FIFO_NB*4;
 endfunction : new
 
 

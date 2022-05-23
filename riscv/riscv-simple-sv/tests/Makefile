@@ -1,6 +1,6 @@
 CC=riscv64-unknown-elf-gcc
 LD=riscv64-unknown-elf-ld
-SREC_CAT=srec_cat
+HEX_CONV32=hexdump -v -e '1/4 "%08x "' -e '"\n"'
 OBJCOPY=riscv64-unknown-elf-objcopy
 CFLAGS=-mabi=ilp32 -march=rv32i -ffunction-sections -fdata-sections
 LDFLAGS=-Tlink.ld -melf32lriscv -Map=$@.map
@@ -25,13 +25,13 @@ all: ${CS} ${VHS}
 	${LD} ${LDFLAGS} $< -o $@
 
 %.text.bin: %.elf
-	${OBJCOPY} -O binary $< $@ -j .init -j .text --change-addresses -0x400000
+	${OBJCOPY} -O binary $< $@ -j .init -j .text -j .rodata --change-addresses -0x400000
 
 %.data.bin: %.elf
-	${OBJCOPY} -O binary $< $@ -j .data -j .eh_frame -j .fini_array -j .init_array --change-addresses -0x80000000
+	${OBJCOPY} -O binary $< $@ -j .uvm_server -j .data -j .eh_frame -j .fini_array -j .init_array --change-addresses -0x80000000
 
 %.vh: %.bin
-	${SREC_CAT} $< -binary -byte-swap 4 -O $@ -VMem 32
+	${HEX_CONV32} $< > $@
 
 clean:
 	rm -f ${OBJS} ${ELFS} ${BINS} ${VHS} ${MAP} ${CS}

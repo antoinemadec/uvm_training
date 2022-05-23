@@ -1,6 +1,6 @@
 OUTPUT_ARCH("riscv")
  
-ENTRY(test)
+ENTRY(main)
  
 MEMORY
 {
@@ -30,6 +30,12 @@ SECTIONS
     *(.text .text.*)
   } >flash AT>flash :flash
  
+  .rodata         :
+  {
+    *(.rdata)
+    *(.rodata .rodata.*)
+  } >flash AT>flash :flash
+ 
   .fini           :
   {
     KEEP (*(SORT_NONE(.fini)))
@@ -39,15 +45,9 @@ SECTIONS
   {
     . = ORIGIN(ram);
     KEEP(*(.uvm_server))
-    . = . + 4*6;
+    . = . + (2+2*3);
   } >ram AT>ram :ram
 
-  .rodata         :
-  {
-    *(.rdata)
-    *(.rodata .rodata.*)
-  } >ram AT>ram :ram
- 
   . = ALIGN(4);
  
   .data          :

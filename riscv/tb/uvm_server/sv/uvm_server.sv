@@ -1,15 +1,19 @@
 `ifndef UVM_SERVER_SV
 `define UVM_SERVER_SV
 
+
 class uvm_server extends uvm_component;
 
   `uvm_component_utils(uvm_server)
 
-  // external
+  //-----------------------------------------------------------
+  // low-level API
+  //-----------------------------------------------------------
   uvm_event               event_to_uvm[UVM_SERVER_EVENT_NB];
   uvm_event               event_to_sw[UVM_SERVER_EVENT_NB];
   bit [31:0]              fifo_data_to_uvm[UVM_SERVER_FIFO_NB][$];
   bit [31:0]              fifo_data_to_sw[UVM_SERVER_FIFO_NB][$];
+  //-----------------------------------------------------------
 
   uvm_tlm_analysis_fifo#(uvm_server_tx) m_mon_fifo;
 
@@ -27,7 +31,7 @@ class uvm_server extends uvm_component;
 
   extern task process_ram_access();
   extern task process_cmd(uvm_server_tx tx);
-  extern task process_cmd_print(uvm_server_tx tx);
+  extern task process_cmd_print(input int severity);
   extern task process_cmd_gen_event(bit [23:0] event_idx);
   extern task process_cmd_wait_event(bit [23:0] event_idx);
   extern task process_cmd_quit(uvm_server_tx tx);
@@ -35,6 +39,8 @@ class uvm_server extends uvm_component;
   extern task process_fifo_data_to_sw(uvm_server_tx tx, int fifo_idx);
   extern task update_data_to_sw();
   extern task check_max_event_idx(bit [23:0] event_idx);
+  extern function string str_replace(string str, string pattern, string replacement);
+  extern function string str_format(input string str, ref bit [31:0] q[$]);
 endclass : uvm_server 
 
 
@@ -83,7 +89,9 @@ task uvm_server::process_ram_access();
     forever begin
       uvm_server_tx tx;
       m_mon_fifo.get(tx);
-      `uvm_info(get_type_name(), {"received new packet from monitor: ", tx.sprint()}, UVM_DEBUG)
+      if (tx.addr >= m_config.cmd_address && tx.addr <= m_config.fifo_data_to_sw_empty_address) begin
+        `uvm_info(get_type_name(), {"received new packet from monitor: ", tx.sprint()}, UVM_DEBUG)
+      end
       if (tx.addr == m_config.cmd_address) begin
         process_cmd(tx);
       end
@@ -107,7 +115,7 @@ task uvm_server::process_cmd(uvm_server_tx tx);
   {cmd_io, cmd} = tx.data;
   if (tx.rwb == 0) begin
     case (cmd)
-      8'h0:  process_cmd_print(tx);
+      8'h0:  process_cmd_print(.severity(cmd_io));
       8'h1:  process_cmd_gen_event(.event_idx(cmd_io));
       8'h2:  process_cmd_wait_event(.event_idx(cmd_io));
       8'hff: process_cmd_quit(tx);
@@ -119,8 +127,27 @@ task uvm_server::process_cmd(uvm_server_tx tx);
 endtask : process_cmd
 
 
-task uvm_server::process_cmd_print(uvm_server_tx tx);
-  `uvm_info(get_type_name(), "print", UVM_LOW)
+task uvm_server::process_cmd_print(input int severity);
+  bit [31:0] addr;
+  string str;
+  int fifo_cmd_size;
+  addr = fifo_data_to_uvm[UVM_SERVER_FIFO_NB-1].pop_front();
+  str = str_format(vif.backdoor_get_string(addr), fifo_data_to_uvm[UVM_SERVER_FIFO_NB-1]);
+  `uvm_info(get_type_name(), $sformatf("print: addr=0x%0x, str=%s", addr, str), UVM_DEBUG)
+  str = {"[cpu] ", str};
+  case (severity)
+    0: `uvm_info(get_type_name(), str, UVM_LOW)
+    1: `uvm_warning(get_type_name(), str)
+    2: `uvm_error(get_type_name(), str)
+    3: `uvm_fatal(get_type_name(), str)
+    default: begin
+      `uvm_fatal(get_type_name(), $sformatf("print severity=%0d is not defined", severity))
+    end
+  endcase
+  fifo_cmd_size = fifo_data_to_uvm[UVM_SERVER_FIFO_NB-1].size();
+  if (fifo_cmd_size != 0) begin
+    `uvm_fatal(get_type_name(), $sformatf("fifo_cmd_size=%0d at the end of process_cmd_print()", fifo_cmd_size))
+  end
 endtask : process_cmd_print
 
 
@@ -159,7 +186,7 @@ endtask : process_fifo_data_to_uvm
 
 task uvm_server::process_fifo_data_to_sw(uvm_server_tx tx, int fifo_idx);
   if (!tx.rwb) begin
-    `uvm_fatal(get_type_name(), $sformatf("illegal write in SW in fifo_data_to_sw[%0d]", fifo_idx))
+    `uvm_fatal(get_type_name(), $sformatf("illegal write from SW in fifo_data_to_sw[%0d]", fifo_idx))
   end
   if (fifo_data_to_sw[fifo_idx].size() == 0) begin
     `uvm_fatal(get_type_name(), "UVM has no data to transmit to SW")
@@ -190,5 +217,51 @@ task uvm_server::check_max_event_idx(bit [23:0] event_idx);
       event_idx, UVM_SERVER_EVENT_NB-1))
   end
 endtask : check_max_event_idx
+
+
+function string uvm_server::str_replace(string str, string pattern, string replacement);
+  string s;
+  int p_len;
+  s = "";
+  p_len = pattern.len();
+  foreach (str[i]) begin
+    s = {s, str[i]};
+    if (s.substr(s.len()-p_len,s.len()-1) == pattern) begin
+      s = {s.substr(0, s.len()-p_len-1), replacement};
+    end
+  end
+  return s;
+endfunction
+
+
+function string uvm_server::str_format(input string str, ref bit [31:0] q[$]);
+  string s;
+  bit fmt_start;
+  int fmt_cnt;
+  fmt_start = 0;
+  s = "";
+  str = str_replace(str, "%%", "__pct__");
+  foreach (str[i]) begin
+    s = {s, str[i]};
+    case (str[i])
+      "%", " ", "\t", "\n": begin
+        if (fmt_start && fmt_cnt > 0) begin
+          s = $sformatf(s, q.pop_front());
+        end
+        fmt_cnt = 0;
+        fmt_start = (str[i] == "%");
+      end
+      default: begin
+        fmt_cnt ++;
+      end
+    endcase
+  end
+  if (fmt_start && fmt_cnt > 0) begin
+    s = $sformatf(s, q.pop_front());
+  end
+  s = str_replace(s, "__pct__", "%");
+  return s;
+endfunction
+
 
 `endif // UVM_SERVER_SV

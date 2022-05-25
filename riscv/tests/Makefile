@@ -2,27 +2,27 @@ CC=riscv64-unknown-elf-gcc
 LD=riscv64-unknown-elf-ld
 HEX_CONV32=hexdump -v -e '1/4 "%08x "' -e '"\n"'
 OBJCOPY=riscv64-unknown-elf-objcopy
-CFLAGS=-mabi=ilp32 -march=rv32i -ffunction-sections -fdata-sections
+
+CFLAGS=-mabi=ilp32 -march=rv32i -ffunction-sections -fdata-sections -Iuvm_server
 LDFLAGS=-Tlink.ld -melf32lriscv -Map=$@.map
-CSRCS=$(wildcard *.c)
-CS=$(CSRCS:.c=.S)
-SRCS=$(wildcard *.S) ${CS}
-OBJS=$(SRCS:.S=.o)
-ELFS=$(SRCS:.S=.elf)
-BINS=$(SRCS:.S=.text.bin) $(SRCS:.S=.data.bin)
-VHS=$(SRCS:.S=.text.vh) $(SRCS:.S=.data.vh)
-MAP=$(SRCS:.S=.elf.map)
 
-all: ${CS} ${VHS}
+SRCS=$(wildcard *.c)
+OBJS=$(SRCS:.c=.o) uvm_server.o
+ELFS=$(SRCS:.c=.elf)
+BINS=$(SRCS:.c=.text.bin) $(SRCS:.c=.data.bin)
+VHS=$(SRCS:.c=.text.vh) $(SRCS:.c=.data.vh)
+MAP=$(SRCS:.c=.elf.map)
 
-%.S: %.c
-	${CC} -c ${CFLAGS} -S -o $@ $<
+all: ${SRCS} ${VHS}
 
-%.o: %.S test_macros.h riscv_test.h
+uvm_server.o: uvm_server/uvm_server.c
 	${CC} -c ${CFLAGS} -o $@ $<
 
-%.elf: %.o 
-	${LD} ${LDFLAGS} $< -o $@
+%.o: %.c
+	${CC} -c ${CFLAGS} -o $@ $<
+
+%.elf: %.o uvm_server.o
+	${LD} ${LDFLAGS} $< -o $@ uvm_server.o
 
 %.text.bin: %.elf
 	${OBJCOPY} -O binary $< $@ -j .init -j .text -j .rodata --change-addresses -0x400000
@@ -34,4 +34,4 @@ all: ${CS} ${VHS}
 	${HEX_CONV32} $< > $@
 
 clean:
-	rm -f ${OBJS} ${ELFS} ${BINS} ${VHS} ${MAP} ${CS}
+	rm -f ${OBJS} ${ELFS} ${BINS} ${VHS} ${MAP}

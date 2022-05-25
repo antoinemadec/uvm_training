@@ -6,8 +6,9 @@ IUS_HOME=$(ncroot)
 TOP_DIR="../riscv-simple-sv"
 
 RTL_DIR="$TOP_DIR/core"
-TEST_DIR="$TOP_DIR/tests"
-TB_DIR="$TOP_DIR/testbench"
+CFG_DIR="$TOP_DIR/config"
+TB_DIR="../tb"
+TEST_DIR="../tests"
 
 
 #--------------------------------------------------------------
@@ -22,7 +23,7 @@ mkdir -p output
 cd output
 
 test_name="$1"
-[ "$test_name" == "" ] && test_name="toto"
+[ "$test_name" == "" ] && test_name="basic_test"
 
 make -C $TEST_DIR
 
@@ -30,22 +31,22 @@ xrun -q                                               \
   -vtimescale 1ns/1ps                                 \
   -uvmhome ${IUS_HOME}/tools/methodology/UVM/CDNS-1.2 \
   -access +rw                                         \
-  +incdir+../tb/include                               \
-  +incdir+../tb/uvm_server/sv                         \
-  +incdir+../tb/top/sv                                \
-  +incdir+../tb/top_test/sv                           \
-  +incdir+../tb/top_tb/sv                             \
-  -incdir $TB_DIR                                     \
+  +incdir+$TB_DIR/include                             \
+  +incdir+$TB_DIR/uvm_server/sv                       \
+  +incdir+$TB_DIR/top/sv                              \
+  +incdir+$TB_DIR/top_test/sv                         \
+  +incdir+$TB_DIR/top_tb/sv                           \
+  -incdir $CFG_DIR                                    \
   -incdir $RTL_DIR/common/                            \
   -incdir $RTL_DIR/singlecycle/                       \
   $RTL_DIR/common/*                                   \
   $RTL_DIR/singlecycle/*                              \
   +text_file=$TEST_DIR/$test_name.text.vh             \
   +data_file=$TEST_DIR/$test_name.data.vh             \
-  ../tb/uvm_server/sv/uvm_server_pkg.sv               \
-  ../tb/uvm_server/sv/uvm_server_if.sv                \
-  ../tb/top/sv/top_pkg.sv                             \
-  ../tb/top_test/sv/top_test_pkg.sv                   \
-  ../tb/top_tb/sv/top_th.sv                           \
-  ../tb/top_tb/sv/top_tb.sv                           \
+  $TB_DIR/uvm_server/sv/uvm_server_pkg.sv             \
+  $TB_DIR/uvm_server/sv/uvm_server_if.sv              \
+  $TB_DIR/top/sv/top_pkg.sv                           \
+  $TB_DIR/top_test/sv/top_test_pkg.sv                 \
+  $TB_DIR/top_tb/sv/top_th.sv                         \
+  $TB_DIR/top_tb/sv/top_tb.sv                         \
   +UVM_TESTNAME=top_test

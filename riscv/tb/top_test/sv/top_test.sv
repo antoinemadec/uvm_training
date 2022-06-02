@@ -44,6 +44,8 @@ function void top_test::build_phase(uvm_phase phase);
 endfunction : build_phase
 
 
+// TODO: implement uvm_server_* tasks
+// __START_REMOVE_SECTION__
 task top_test::uvm_server_gen_event(int event_idx);
   m_env.m_uvm_server.event_to_sw[event_idx].trigger();
 endtask : uvm_server_gen_event
@@ -67,6 +69,7 @@ function bit top_test::uvm_server_pull_data(input int fifo_idx, output [31:0] da
   data = m_env.m_uvm_server.fifo_data_to_uvm[fifo_idx].pop_front();
   return 1;
 endfunction : uvm_server_pull_data
+// __END_REMOVE_SECTION__
 
 
 task top_test::run_phase(uvm_phase phase);

@@ -29,6 +29,7 @@ class uvm_server extends uvm_component;
   extern function void connect_phase(uvm_phase phase);
   extern task run_phase(uvm_phase phase);
 
+  // __START_REMOVE_SECTION__
   extern task process_ram_access();
   extern task process_cmd(uvm_server_tx tx);
   extern task process_cmd_print(input int severity);
@@ -39,6 +40,7 @@ class uvm_server extends uvm_component;
   extern task process_fifo_data_to_sw(uvm_server_tx tx, int fifo_idx);
   extern task update_data_to_sw();
   extern task check_max_event_idx(bit [23:0] event_idx);
+  // __END_REMOVE_SECTION__
   extern function string str_replace(string str, string pattern, string replacement);
   extern function string str_format(input string str, ref bit [31:0] q[$]);
 endclass : uvm_server 
@@ -76,15 +78,19 @@ endfunction : connect_phase
 
 task uvm_server::run_phase(uvm_phase phase);
   phase.raise_objection(this);
+  // TODO: proccess m_mon_fifo
+  // __START_REMOVE_SECTION__
   fork
     update_data_to_sw();
     process_ram_access();
     wait(m_quit);
   join_any
+  // __END_REMOVE_SECTION__
   phase.drop_objection(this);
 endtask : run_phase
 
 
+// __START_REMOVE_SECTION__
 task uvm_server::process_ram_access();
     forever begin
       uvm_server_tx tx;
@@ -217,6 +223,7 @@ task uvm_server::check_max_event_idx(bit [23:0] event_idx);
       event_idx, UVM_SERVER_EVENT_NB-1))
   end
 endtask : check_max_event_idx
+// __END_REMOVE_SECTION__
 
 
 function string uvm_server::str_replace(string str, string pattern, string replacement);

@@ -8,6 +8,8 @@
 static volatile spy_st uvm_server __attribute__ ((section (".uvm_server")));
 
 
+// TODO: implement uvm_server_* functions
+// __START_REMOVE_SECTION__
 #define UVM_SERVER_PRINT_PUSH_ARGS                                               \
   va_list ap; uvm_server.fifo_data_to_uvm[UVM_SERVER_FIFO_NB-1] = (uint32_t)str; \
   va_start(ap, str);                                                             \
@@ -82,3 +84,4 @@ void uvm_server_print_fatal(uint32_t arg_cnt, char const *const str,  ...) {
   UVM_SERVER_PRINT_PUSH_ARGS;
   uvm_server.cmd = 0x0 | 3<<8;
 }
+// __END_REMOVE_SECTION__

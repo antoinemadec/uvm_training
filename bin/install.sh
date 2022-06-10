@@ -10,6 +10,7 @@ sudo yum -y install gcc clang libcxx libstdc++-static gcc-c++
 sudo yum -y install nodejs npm
 sudo yum -y install autoconf automake
 sudo yum -y install htop
+sudo yum -y install the_silver_searcher
 
 # python3.8
 sudo yum -y install gcc openssl-devel bzip2-devel libffi-devel

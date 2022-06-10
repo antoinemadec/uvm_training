@@ -13,6 +13,8 @@ install_latest_neovim() {
 
 cd ~
 git clone http://github.com/antoinemadec/dotfiles
+cd dotfiles
+./deploy
 cat << EOF > ~/.gitconfig
 [color]
   ui = auto

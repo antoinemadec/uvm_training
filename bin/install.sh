@@ -23,4 +23,4 @@ ssh-keygen
 ssh-copy-id formation6@pc-formation6
 
 sudo mkdir -p /formation
-sudo echo "formation6@pc-formation6:/formation /formation     fuse.sshfs    idmap=user,identityfile=/home/$USER/.ssh/id_rsa,allow_other 0 0" >> /etc/fstab
+echo "formation6@pc-formation6:/formation /formation     fuse.sshfs    idmap=user,identityfile=/home/$USER/.ssh/id_rsa,allow_other 0 0" | sudo tee -a /etc/fstab

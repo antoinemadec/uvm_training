@@ -11,6 +11,7 @@ install_latest_neovim() {
   curl -sSL "${url}/${filename}" | tar -C "${HOME}/src" -xz -f -
 }
 
+cd ~
 git clone http://github.com/antoinemadec/dotfiles
 cat << EOF > ~/.gitconfig
 [color]

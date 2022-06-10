@@ -6,10 +6,12 @@ sudo yum -y install git
 
 sudo yum -y install epel-release
 sudo yum -y install fuse-sshfs
-sudo yum -y gcc clang libcxx libstdc++-static gcc-c++
-sudo yum -y nodejs npm
+sudo yum -y install gcc clang libcxx libstdc++-static gcc-c++
+sudo yum -y install nodejs npm
+sudo yum -y install autoconf automake
+sudo yum -y install htop
 
-#python3.8
+# python3.8
 sudo yum -y install gcc openssl-devel bzip2-devel libffi-devel
 mkdir -p ~/src
 cd ~/src
@@ -18,6 +20,16 @@ tar -xzf Python-3.8.1.tgz
 cd Python-3.8.1/
 ./configure --enable-optimizations
 sudo make altinstall
+
+# ctags
+mkdir -p ~/src
+cd ~/src
+git clone https://github.com/universal-ctags/ctags.git
+cd ctags
+./autogen.sh
+./configure --prefix=/usr
+make
+sudo make install
 
 ssh-keygen
 ssh-copy-id formation6@pc-formation6

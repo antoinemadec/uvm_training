@@ -5,6 +5,11 @@ set -e
 #--------------------------------------------------------------
 # functions
 #--------------------------------------------------------------
+error() {
+  >&2 echo "ERROR: $@"
+  exit 1
+}
+
 run_cov_ius() {
   rm -rf generated_tb/sim/cov_work
   cp -f ./covfile.txt generated_tb/sim/
@@ -22,18 +27,13 @@ run_cov_questa() {
 case "$1" in
   "-ius")
     shift
-    run_cov_ius
+    run_cov_ius $@
     ;;
   "-questa")
     shift
     run_cov_questa $@
     ;;
   *)
-    echo "Unknown simulator: $1"
-    exit 1
+    error "Unknown simulator: $1 ; use -ius or -questa"
     ;;
 esac
-
-
-
-

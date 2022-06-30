@@ -35,6 +35,6 @@ case "$1" in
     run_questa $@
     ;;
   *)
-    error "Unknown simulator: $1"
+    error "Unknown simulator: $1 ; use -ius or -questa"
     ;;
 esac

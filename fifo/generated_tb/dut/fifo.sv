@@ -5,7 +5,7 @@ module fifo (
   input        data_in_vld,
   output       data_in_rdy,
   // data_out
-  output [15:0] data_out,
+  output logic [15:0] data_out,
   output        data_out_vld,
   input         data_out_rdy
 );
@@ -16,7 +16,13 @@ module fifo (
 
   assign data_in_rdy = q16.size() <= (FIFO16_SIZE - 2);
   assign data_out_vld = (q16.size() > 0);
-  assign data_out = q16[0];
+
+  always @(*) begin
+    if (q16.size() > 0)
+      data_out = q16[0];
+    else
+      data_out = 1'bX;
+  end
 
   always_ff @(posedge clk) begin
     if (data_in_vld && data_in_rdy) begin

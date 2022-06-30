@@ -1,3 +1,4 @@
+transcript file questa_compile
 
 file delete -force work
 
@@ -38,7 +39,4 @@ eval $cmd
 set cmd  "vlog -sv -timescale 1ns/1ps +incdir+../tb/include +incdir+../tb/"
 append cmd $tb_name "_tb/sv ../tb/" $tb_name "_tb/sv/" $tb_name "_tb.sv"
 eval $cmd
-
-vsim top_tb +UVM_TESTNAME=top_test  -voptargs=+acc -solvefaildebug -uvmcontrol=all -classdebug
-run 0
-#do wave.do
+exit 

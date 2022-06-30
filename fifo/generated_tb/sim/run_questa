@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e 
+
+# Compile testbench
+vsim -c -do "compile_questa.do"
+
+# Run test
+vsim top_tb \
+  +UVM_TESTNAME=top_test \
+  -voptargs=+acc -solvefaildebug \
+  -uvmcontrol=all -classdebug \
+  -do "waves.do" $@
+  # -coverage -voptargs="+cover=bcesfx" \
+  # -coverstore cov_db -testname "top_test" \

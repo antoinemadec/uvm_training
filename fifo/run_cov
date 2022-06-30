@@ -2,7 +2,38 @@
 
 set -e
 
-rm -rf generated_tb/sim/cov_work
-cp -f ./covfile.txt generated_tb/sim/
+#--------------------------------------------------------------
+# functions
+#--------------------------------------------------------------
+run_cov_ius() {
+  rm -rf generated_tb/sim/cov_work
+  cp -f ./covfile.txt generated_tb/sim/
+  ./run -ius -covfile ./covfile.txt +coverage_enable $@
+}
 
-./run -covfile ./covfile.txt +coverage_enable $@
+run_cov_questa() {
+  ./run -questa -coverage -voptargs="+cover=bcesfx" \
+    -coverstore cov_db -testname "top_test" $@
+}
+
+#--------------------------------------------------------------
+# execution
+#--------------------------------------------------------------
+case "$1" in
+  "-ius")
+    shift
+    run_cov_ius
+    ;;
+  "-questa")
+    shift
+    run_cov_questa $@
+    ;;
+  *)
+    echo "Unknown simulator: $1"
+    exit 1
+    ;;
+esac
+
+
+
+

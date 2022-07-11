@@ -3,6 +3,7 @@
 # recent git
 sudo yum -y install https://packages.endpointdev.com/rhel/7/os/x86_64/endpoint-repo.x86_64.rpm
 sudo yum -y install git
+sudo yum -y install tig
 
 sudo yum -y install epel-release
 sudo yum -y install fuse-sshfs
@@ -10,7 +11,17 @@ sudo yum -y install gcc clang libcxx libstdc++-static gcc-c++
 sudo yum -y install nodejs npm
 sudo yum -y install autoconf automake
 sudo yum -y install htop
+sudo yum -y install xfce4-terminal
+sudo yum -y install ksh
 sudo yum -y install the_silver_searcher
+
+# ripgrep
+sudo yum-config-manager --add-repo=https://copr.fedorainfracloud.org/coprs/carlwgeorge/ripgrep/repo/epel-7/carlwgeorge-ripgrep-epel-7.repo
+sudo yum -y install ripgrep
+
+# fzf
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install --all
 
 # python3.8
 sudo yum -y install gcc openssl-devel bzip2-devel libffi-devel
@@ -33,7 +44,3 @@ make
 sudo make install
 
 ssh-keygen
-ssh-copy-id formation6@pc-formation6
-
-sudo mkdir -p /formation
-echo "formation6@pc-formation6:/formation /formation     fuse.sshfs    idmap=user,identityfile=/home/$USER/.ssh/id_rsa,allow_other 0 0" | sudo tee -a /etc/fstab

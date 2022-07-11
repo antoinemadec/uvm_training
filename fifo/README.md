@@ -45,7 +45,8 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
 ### week3 day1
   1. create a **private** git repo
   2. use **./copy_repo.sh** to copy this repo in your repo
-  3. easier UVM
+  3. commit and push, look at this README in Github
+  4. easier UVM
       1. here is the [reference guide](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/easier-uvm-code-generator/easier-uvm-code-generator-reference-guide/)
       2. in **./fifo**, create a template for each agent
           - defining a good sequence_item is very important
@@ -64,19 +65,21 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
           - comment out do_mon() in monitors for now
           - comment out do_drive() in drivers for now
       6. look at the code, Q&A
-  4. commit
+  5. commit
       - generate a .gitignore
       - commit + push
 
 ### week3 day2
   1. add the following in **top_tb.sv** to dump all wavesforms
       ```verilog
-      // dump all waveforms (xrun specific)
-      initial
-      begin
-        $shm_open("waves.shm");
-        $shm_probe("ACMTF");
-      end
+      `ifdef XCELIUM
+        // dump all waveforms (xrun specific)
+        initial
+        begin
+          $shm_open("waves.shm");
+          $shm_probe("ACMTF");
+        end
+      `endif
       ```
   2. interface: use [clocking blocks](https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-clocking-tutorial), make sure it compiles
   3. monitor & driver: fill out **do_mon()** and **do_drive()**, make sure it compiles
@@ -123,3 +126,22 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
           - can override by type or by instance
           - can be used for error injection etc
   2. Q&A
+
+# Tools
+## Xcelium
+```sh
+# waveforms
+simvision waves.shm
+
+# coverage metrics
+imc
+```
+
+## Questa
+```sh
+# waveforms
+vsim vsim.wlf
+
+# coverage metrics
+vsim -viewcov cov_db:top_test
+```

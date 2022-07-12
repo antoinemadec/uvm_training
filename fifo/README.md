@@ -48,7 +48,7 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
   3. commit and push, look at this README in Github
   4. easier UVM
       1. here is the [reference guide](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/easier-uvm-code-generator/easier-uvm-code-generator-reference-guide/)
-      2. in **./fifo**, create a template for each agent
+      2. in **./fifo**, create a template for each agent named **fifo_in** and **fifo_out**
           - defining a good sequence_item is very important
           - use wires in the interface. This is why: [link1](https://verificationacademy.com/forums/systemverilog/wire-vs.-logic-sv-interface) and [link2](https://blogs.sw.siemens.com/verificationhorizons/2013/05/03/wire-vs-reg/)
               > Any signal with more or the potential for more than one driver should be declared as a wire.
@@ -102,7 +102,7 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
   - assertions
       - discussion: immediate vs concurrent assertions
       - for more info, try [this website](https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-assertions-tutorial)
-  - code coverage:
+  - code coverage
       - makes sure all the DUT was exercised
       - costs no time
   - functional coverage

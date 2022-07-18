@@ -61,10 +61,10 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
               ```
       3. create a pinlist
       4. generate code with **./gen**
-      5. make sure it compiles with **./run**
+      5. look at the code, Q&A
+      6. make sure it compiles with **./run**
           - comment out do_mon() in monitors for now
           - comment out do_drive() in drivers for now
-      6. look at the code, Q&A
   5. commit
       - generate a .gitignore
       - commit + push

@@ -27,6 +27,7 @@ run_questa(){
 #--------------------------------------------------------------
 [ -d generated_tb/sim ] || error "generated_tb/sim does not exist"
 cp -f input/* generated_tb/sim || error "couldn't copy input/* in generated_tb/sim"
+[ -f "generated_tb/tb/top/sv/top_cov_if.sv" ] || touch generated_tb/tb/top/sv/top_cov_if.sv
 
 case "$1" in
   "-ius")

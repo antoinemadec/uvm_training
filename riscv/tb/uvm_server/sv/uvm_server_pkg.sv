@@ -6,7 +6,7 @@ package uvm_server_pkg;
 
   localparam UVM_SERVER_EVENT_NB = 1024;
 
-  // UVM_SERVER_DATA_FIFO_NB data fifo + 1 cmd fifo
+  // UVM_SERVER_DATA_FIFO_NB data fifo + 1 cmd args fifo
   localparam UVM_SERVER_DATA_FIFO_NB  = 2;
   localparam UVM_SERVER_FIFO_NB = UVM_SERVER_DATA_FIFO_NB + 1;
 

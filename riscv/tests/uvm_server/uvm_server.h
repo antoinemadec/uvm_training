@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 
-// UVM_SERVER_DATA_FIFO_NB data fifo + 1 cmd fifo
+// UVM_SERVER_DATA_FIFO_NB data fifo + 1 cmd args fifo
 #define UVM_SERVER_DATA_FIFO_NB 2
 #define UVM_SERVER_FIFO_NB (UVM_SERVER_DATA_FIFO_NB + 1)
 

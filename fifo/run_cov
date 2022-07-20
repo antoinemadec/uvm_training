@@ -12,7 +12,6 @@ error() {
 
 run_cov_ius() {
   rm -rf generated_tb/sim/cov_work
-  cp -f ./covfile.txt generated_tb/sim/
   ./run -ius -covfile ./covfile.txt +coverage_enable $@
 }
 

@@ -97,6 +97,7 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
       2. discussion: rate vs delay
       3. look at **./verif_utils/verif_utils_delays.sv**
       4. modify your sequence_items and drivers
+  3. drive data to X when it is not supposed to be read by the DUT
 
 ### week3 day4
   - assertions
@@ -112,7 +113,7 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
       - note that concurrent assertions can be used for functional coverage
   1. use **run_cov** to run your simulation with coverage
   2. use IMC to look at the code/functional coverage
-  3. add a covergroup checking the fifo went
+  3. add a cover group or a cover property checking that the fifo went
       - full->empty->full
       - empty->full->empty
 

@@ -17,7 +17,7 @@ run_cov_ius() {
 }
 
 run_cov_questa() {
-  ./run -questa -coverage -voptargs="+cover=bcesfx+fifo" \
+  ./run -questa -coverage -voptargs="+cover=bcesft+fifo" \
     -coverstore cov_db -testname "top_test" +coverage_enable $@
 }
 

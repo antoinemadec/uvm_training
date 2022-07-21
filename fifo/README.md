@@ -3,6 +3,8 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
 
 ![](https://www.chipverify.com/images/uvm/tb_top.png)
 
+
+
 # Agenda
 ## I- Prerequisites
 ### week1 day1 to day3
@@ -116,6 +118,9 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
   3. add a cover group or a cover property checking that the fifo went
       - full->empty->full
       - empty->full->empty
+  4. discussion: IP-level vs top-level verification
+      - IP-level: random tests, 100% code+functional coverage
+      - top-level: directed tests, only code coverage (toggle coverage on IOs)
 
 ### week3 day5
   1. resources & discussion
@@ -127,6 +132,8 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
           - can override by type or by instance
           - can be used for error injection etc
   2. Q&A
+
+
 
 # Tools
 ## Xcelium

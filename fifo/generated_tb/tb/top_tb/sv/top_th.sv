@@ -21,20 +21,17 @@ module top_th;
 
   assign fifo_in_if_0.clk  = clk;
   assign fifo_out_if_0.clk = clk;
-  assign top_cov_if_0.clk  = coverage_enable & clk;
 
   // Pin-level interfaces connected to DUT
   fifo_in_if   fifo_in_if_0 ();
   fifo_out_if  fifo_out_if_0 ();
 
-  // for coverage purposes
-  top_cov_if   top_cov_if_0 ();
-  assign top_cov_if_0.data_in      = fifo.data_in;
-  assign top_cov_if_0.data_in_vld  = fifo.data_in_vld;
-  assign top_cov_if_0.data_in_rdy  = fifo.data_in_rdy;
-  assign top_cov_if_0.data_out     = fifo.data_out;
-  assign top_cov_if_0.data_out_vld = fifo.data_out_vld;
-  assign top_cov_if_0.data_out_rdy = fifo.data_out_rdy;
+  // coverage
+  top_cov top_cov(
+    .clk          (coverage_enable && fifo.clk ),
+    .data_in_rdy  (fifo.data_in_rdy            ),
+    .data_out_vld (fifo.data_out_vld           )
+  );
 
   fifo fifo (
     .clk         (clk),

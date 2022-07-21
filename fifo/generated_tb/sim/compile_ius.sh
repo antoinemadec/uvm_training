@@ -14,7 +14,7 @@ irun -vtimescale 1ns/1ps -uvmhome ${IUS_HOME}/tools/methodology/UVM/CDNS-1.2 \
 ../tb/fifo_out/sv/fifo_out_pkg.sv \
 ../tb/fifo_out/sv/fifo_out_if.sv \
 ../tb/top/sv/top_pkg.sv \
-../tb/top/sv/top_cov_if.sv \
+../tb/top/sv/top_cov.sv \
 ../tb/top_test/sv/top_test_pkg.sv \
 ../tb/top_tb/sv/top_th.sv \
 ../tb/top_tb/sv/top_tb.sv \

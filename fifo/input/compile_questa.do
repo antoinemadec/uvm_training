@@ -33,7 +33,7 @@ eval $cmd
 
 set cmd  "vlog -sv -timescale 1ns/1ps +incdir+../tb/include +incdir+../tb/"
 append cmd $tb_name "_tb/sv ../tb/" $tb_name "_tb/sv/" $tb_name "_th.sv"
-append cmd " ../tb/" $tb_name "/sv/top_cov_if.sv"
+append cmd " ../tb/" $tb_name "/sv/top_cov.sv"
 eval $cmd
 
 set cmd  "vlog -sv -timescale 1ns/1ps +incdir+../tb/include +incdir+../tb/"

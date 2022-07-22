@@ -43,7 +43,7 @@ class uvm_server extends uvm_component;
   // __END_REMOVE_SECTION__
   extern function string str_replace(string str, string pattern, string replacement);
   extern function string str_format(input string str, ref bit [31:0] q[$]);
-endclass : uvm_server 
+endclass : uvm_server
 
 
 function  uvm_server::new(string name, uvm_component parent);

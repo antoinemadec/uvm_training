@@ -18,10 +18,10 @@ module example_data_memory_bus (
 
     logic [31:0] fetched;
     logic is_data_memory;
-    
+
   // FIXME: stack is in 0xffff_ff.. instead of 0x8002_00..
   assign is_data_memory = address >= `DATA_BEGIN; // && address <= `DATA_END;
-    
+
     example_data_memory data_memory(
         .clock      (clock),
         .address    (address[`DATA_BITS-1:2]),
@@ -30,8 +30,8 @@ module example_data_memory_bus (
         .wren       (write_enable && is_data_memory),
         .q          (fetched)
     );
-   
-    assign read_data = 
+
+    assign read_data =
         read_enable && is_data_memory
         ? fetched
         : 32'hxxxxxxxx;

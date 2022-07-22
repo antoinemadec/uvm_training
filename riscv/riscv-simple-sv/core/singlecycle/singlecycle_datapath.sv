@@ -21,7 +21,7 @@ module singlecycle_datapath (
     output [2:0] inst_funct3,
     output [6:0] inst_funct7,
     output alu_result_equal_zero,
-    
+
     // control signals
     input pc_write_enable,
     input regfile_write_enable,
@@ -39,24 +39,24 @@ module singlecycle_datapath (
     logic  [4:0]  inst_rd;
     logic  [4:0]  inst_rs1;
     logic  [4:0]  inst_rs2;
-    
+
     // program counter signals
     logic [31:0] pc_plus_4;
     logic [31:0] pc_plus_immediate;
     logic [31:0] next_pc;
-    
+
     // ALU signals
     logic [31:0] alu_operand_a;
     logic [31:0] alu_operand_b;
     logic [31:0] alu_result;
-    
+
     // immediate
     logic [31:0] immediate;
-    
+
     // memory signals
     assign data_mem_address     = alu_result;
     assign data_mem_write_data  = rs2_data;
-    
+
     adder #(
         .WIDTH(32)
     ) adder_pc_plus_4 (
@@ -64,7 +64,7 @@ module singlecycle_datapath (
         .operand_b      (pc),
         .result         (pc_plus_4)
     );
-    
+
     adder #(
        .WIDTH(32)
     ) adder_pc_plus_immediate (
@@ -72,7 +72,7 @@ module singlecycle_datapath (
         .operand_b      (immediate),
         .result         (pc_plus_immediate)
     );
-    
+
     alu alu(
         .alu_function       (alu_function),
         .operand_a          (alu_operand_a),
@@ -80,7 +80,7 @@ module singlecycle_datapath (
         .result             (alu_result),
         .result_equal_zero  (alu_result_equal_zero)
     );
-    
+
     multiplexer4 #(
         .WIDTH(32)
     ) mux_next_pc_select (
@@ -91,7 +91,7 @@ module singlecycle_datapath (
         .sel (next_pc_select),
         .out (next_pc)
     );
-    
+
     multiplexer2 #(
         .WIDTH(32)
     ) mux_operand_a (
@@ -100,7 +100,7 @@ module singlecycle_datapath (
         .sel (alu_operand_a_select),
         .out (alu_operand_a)
     );
-    
+
     multiplexer2 #(
         .WIDTH(32)
     ) mux_operand_b (
@@ -109,7 +109,7 @@ module singlecycle_datapath (
         .sel (alu_operand_b_select),
         .out (alu_operand_b)
     );
-    
+
     multiplexer8 #(
         .WIDTH(32)
     ) mux_reg_writeback (
@@ -124,7 +124,7 @@ module singlecycle_datapath (
         .sel (reg_writeback_select),
         .out (rd_data)
     );
-    
+
     register #(
         .WIDTH(32),
         .INITIAL(`INITIAL_PC)
@@ -135,7 +135,7 @@ module singlecycle_datapath (
         .next               (next_pc),
         .value              (pc)
     );
-    
+
     regfile regfile(
         .clock              (clock),
         .write_enable       (regfile_write_enable),
@@ -156,11 +156,11 @@ module singlecycle_datapath (
         .inst_rs1               (inst_rs1),
         .inst_rs2               (inst_rs2)
     );
-    
+
     immediate_generator immediate_generator(
         .inst                   (inst),
         .immediate              (immediate)
     );
-    
+
 endmodule
 

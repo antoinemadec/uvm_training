@@ -22,7 +22,7 @@ module regfile (
   // no X's when using provided assembly files
   // must be a compiler/sw issue
     bit [31:0] register [0:31];
-   
+
     // Read ports for rs1 and rs2
     assign rs1_data = register[rs1_address];
     assign rs2_data = register[rs2_address];

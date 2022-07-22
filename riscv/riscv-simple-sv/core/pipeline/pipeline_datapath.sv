@@ -26,7 +26,7 @@ module pipeline_datapath (
     output alu_result_equal_zero,
     output [1:0] _branch_status,
     output want_stall,
-    
+
     // control signals
     input pc_write_enable,
     input no_stall,
@@ -65,7 +65,7 @@ module pipeline_datapath (
     logic [31:0] rd_data[PL_WB:PL_WB];
     logic [31:0] rs1_data[PL_ID:PL_EX];
     logic [31:0] rs2_data[PL_ID:PL_MEM];
-    
+
     // program counter signals
     logic [31:0] pc_plus_4[PL_IF:PL_WB];
     logic [31:0] pc_plus_immediate[PL_EX:PL_EX];
@@ -73,15 +73,15 @@ module pipeline_datapath (
     logic [4:0] inst_rd[PL_ID:PL_WB];
     logic [4:0] inst_rs1[PL_ID:PL_ID];
     logic [4:0] inst_rs2[PL_ID:PL_ID];
-    
+
     // ALU signals
     logic [31:0] alu_operand_a[PL_EX:PL_EX];
     logic [31:0] alu_operand_b[PL_EX:PL_EX];
     logic [31:0] alu_result[PL_EX:PL_WB];
-    
+
     // immediate
     logic [31:0] immediate[PL_ID:PL_WB];
-    
+
     // ID pipeline registers
     always_ff @(posedge clock or posedge reset) if (reset) begin
         inst[PL_ID] <= 32'h00000013; // nop
@@ -185,7 +185,7 @@ module pipeline_datapath (
         || regfile_write_enable[PL_WB] && inst_rd[PL_WB] == inst_rs1[PL_ID] && |inst_rd[PL_WB] && alu_operand_a_select[PL_ID] == `CTL_ALU_A_RS1
         || regfile_write_enable[PL_WB] && inst_rd[PL_WB] == inst_rs2[PL_ID] && |inst_rd[PL_WB] && alu_operand_b_select[PL_ID] == `CTL_ALU_B_RS2
         || regfile_write_enable[PL_WB] && inst_rd[PL_WB] == inst_rs2[PL_ID] && |inst_rd[PL_WB] && (data_mem_read_enable[PL_ID] || data_mem_write_enable[PL_ID]);
-    
+
     adder #(
         .WIDTH(32)
     ) adder_pc_plus_4 (
@@ -193,7 +193,7 @@ module pipeline_datapath (
         .operand_b      (pc[PL_IF]),
         .result         (pc_plus_4[PL_IF])
     );
-    
+
     adder #(
        .WIDTH(32)
     ) adder_pc_plus_immediate (
@@ -201,7 +201,7 @@ module pipeline_datapath (
         .operand_b      (immediate[PL_EX]),
         .result         (pc_plus_immediate[PL_EX])
     );
-    
+
     alu alu(
         .alu_function       (alu_function[PL_EX]),
         .operand_a          (alu_operand_a[PL_EX]),
@@ -209,7 +209,7 @@ module pipeline_datapath (
         .result             (alu_result[PL_EX]),
         .result_equal_zero  (alu_result_equal_zero)
     );
-    
+
     multiplexer4 #(
         .WIDTH(32)
     ) mux_next_pc_select (
@@ -220,7 +220,7 @@ module pipeline_datapath (
         .sel (next_pc_select),
         .out (next_pc)
     );
-    
+
     multiplexer2 #(
         .WIDTH(32)
     ) mux_operand_a (
@@ -229,7 +229,7 @@ module pipeline_datapath (
         .sel (alu_operand_a_select[PL_EX]),
         .out (alu_operand_a[PL_EX])
     );
-    
+
     multiplexer2 #(
         .WIDTH(32)
     ) mux_operand_b (
@@ -238,7 +238,7 @@ module pipeline_datapath (
         .sel (alu_operand_b_select[PL_EX]),
         .out (alu_operand_b[PL_EX])
     );
-    
+
     multiplexer8 #(
         .WIDTH(32)
     ) mux_reg_writeback (
@@ -253,7 +253,7 @@ module pipeline_datapath (
         .sel (reg_writeback_select[PL_WB]),
         .out (rd_data[PL_WB])
     );
-    
+
     register #(
         .WIDTH(32),
         .INITIAL(`INITIAL_PC)
@@ -264,7 +264,7 @@ module pipeline_datapath (
         .next               (next_pc),
         .value              (pc[PL_IF])
     );
-    
+
     regfile regfile(
         .clock              (clock),
         .write_enable       (regfile_write_enable[PL_WB]),
@@ -285,11 +285,11 @@ module pipeline_datapath (
         .inst_rs1               (inst_rs1[PL_ID]),
         .inst_rs2               (inst_rs2[PL_ID])
     );
-    
+
     immediate_generator immediate_generator(
         .inst                   (inst[PL_ID]),
         .immediate              (immediate[PL_ID])
     );
-    
+
 endmodule
 

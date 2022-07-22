@@ -42,12 +42,12 @@ module multicycle_datapath (
     logic [31:0] alu_operand_b;
     logic [31:0] alu_result;
     logic [31:0] alu_out;
-    
+
     // register file signals
     logic [4:0] inst_rd;
     logic [4:0] inst_rs1;
     logic [4:0] inst_rs2;
-    
+
     // register file inputs and outputs
     logic [31:0] rd_data;
     logic [31:0] rs1_data;
@@ -57,16 +57,16 @@ module multicycle_datapath (
 
     // program counter signals
     logic [31:0] next_pc;
-    
+
     logic [31:0] data;
 
     assign mem_write_data = rs2_out;
-    
+
     immediate_generator immediate_generator(
         .inst                   (inst),
         .immediate              (immediate)
     );
-    
+
     instruction_decoder instruction_decoder(
         .inst                   (inst),
         .inst_opcode            (inst_opcode),
@@ -76,7 +76,7 @@ module multicycle_datapath (
         .inst_rs1               (inst_rs1),
         .inst_rs2               (inst_rs2)
     );
-    
+
     alu alu(
         .alu_function       (alu_function),
         .operand_a          (alu_operand_a),
@@ -84,7 +84,7 @@ module multicycle_datapath (
         .result             (alu_result),
         .result_equal_zero  (alu_result_equal_zero)
     );
-    
+
     register #(
         .WIDTH(32),
         .INITIAL(`INITIAL_PC)
@@ -198,7 +198,7 @@ module multicycle_datapath (
         .sel                (next_pc_select),
         .out                (next_pc)
     );
-    
+
     regfile regfile(
         .clock              (clock),
         .write_enable       (regfile_write_enable),

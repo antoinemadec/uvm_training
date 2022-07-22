@@ -67,7 +67,7 @@ module multicycle_control (
             `STATE_JAL: state <= `STATE_FETCH;
             `STATE_JALR: state <= `STATE_FETCH;
             `STATE_ALU_WRITEBACK: state <= `STATE_FETCH;
-            `STATE_MEM_ADDR: 
+            `STATE_MEM_ADDR:
                 case (inst_opcode)
                     `OPCODE_LOAD: state <= `STATE_MEM_READ;
                     `OPCODE_STORE: state <= `STATE_MEM_WRITE;

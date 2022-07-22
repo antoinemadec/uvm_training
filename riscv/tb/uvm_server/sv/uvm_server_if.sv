@@ -4,7 +4,7 @@
   `define UVM_SERVER_MEM top_tb.th.toplevel.data_memory_bus
   `define UVM_SERVER_RO_MEM top_tb.th.toplevel.text_memory_bus
 
-interface uvm_server_if(); 
+interface uvm_server_if();
 
   timeunit      1ns;
   timeprecision 1ps;

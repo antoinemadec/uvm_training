@@ -19,7 +19,7 @@ module register #(
 );
 
    // initial value = INITIAL;
-   
+
    always_ff @ (posedge clock or posedge reset)
        if (reset) value <= INITIAL;
        else if (write_enable) value <= next;

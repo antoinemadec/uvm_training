@@ -17,7 +17,7 @@ class uvm_server_monitor extends uvm_monitor;
   extern task run_phase(uvm_phase phase);
   extern task do_mon();
 
-endclass : uvm_server_monitor 
+endclass : uvm_server_monitor
 
 
 function uvm_server_monitor::new(string name, uvm_component parent);

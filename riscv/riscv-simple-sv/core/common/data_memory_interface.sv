@@ -30,7 +30,7 @@ module data_memory_interface (
     assign bus_write_enable = write_enable;
     assign bus_read_enable  = read_enable;
     assign bus_write_data   = write_data << (8*address[1:0]);
-    
+
     // calculate byte enable
     always_comb begin
        bus_byte_enable = 4'b0000;
@@ -41,12 +41,12 @@ module data_memory_interface (
            default: bus_byte_enable = 4'b0000;
        endcase
     end
-    
+
     // correct for unaligned accesses
     always_comb begin
        position_fix = bus_read_data >> (8*address[1:0]);
     end
-    
+
     // sign-extend if necessary
     always_comb begin
        case (data_format[1:0])
@@ -58,6 +58,6 @@ module data_memory_interface (
     end
 
     assign read_data = sign_fix;
-    
+
 endmodule
 

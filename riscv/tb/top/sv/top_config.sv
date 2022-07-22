@@ -11,7 +11,7 @@ class top_config extends uvm_object;
 
   extern function new(string name = "");
 
-endclass : top_config 
+endclass : top_config
 
 
 function top_config::new(string name = "");

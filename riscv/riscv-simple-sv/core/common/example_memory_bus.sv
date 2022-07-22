@@ -18,9 +18,9 @@ module example_memory_bus (
 
     logic [31:0] text_fetched, data_fetched;
     logic is_data_memory;
-    
+
     assign is_data_memory = address >= `DATA_BEGIN && address <= `DATA_END;
-    
+
     example_data_memory data_memory(
         .clock      (clock),
         .address    (address[`DATA_BITS-1:2]),
@@ -29,14 +29,14 @@ module example_memory_bus (
         .wren       (write_enable && is_data_memory),
         .q          (data_fetched)
     );
-   
+
     example_text_memory text_memory(
         .address    (address[`TEXT_BITS-1:2]),
         .clock      (clock),
         .q          (text_fetched)
     );
-   
-    assign read_data = 
+
+    assign read_data =
           read_enable && address >= `TEXT_BEGIN && address <= `TEXT_END
         ? text_fetched
         : read_enable && is_data_memory

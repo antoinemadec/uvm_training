@@ -81,7 +81,7 @@ module pipeline_control (
         alu_operand_b_select    = 1'b1; // -- || --
         alu_op_type             = 2'bx;
         reg_writeback_select    = 3'bx;
-    
+
         case (inst_opcode)
             `OPCODE_LOAD:
             begin
@@ -90,12 +90,12 @@ module pipeline_control (
                 alu_op_type             = `CTL_ALU_ADD;
                 reg_writeback_select    = `CTL_WRITEBACK_DATA;
             end
-    
+
             `OPCODE_MISC_MEM:
             begin
                 // Fence - ignore
             end
-    
+
             `OPCODE_OP_IMM:
             begin
                 alu_operand_a_select    = `CTL_ALU_A_RS1;
@@ -103,7 +103,7 @@ module pipeline_control (
                 alu_op_type             = `CTL_ALU_OP_IMM;
                 reg_writeback_select    = `CTL_WRITEBACK_ALU;
             end
-    
+
             `OPCODE_AUIPC:
             begin
                 alu_operand_a_select    = `CTL_ALU_A_PC;
@@ -111,14 +111,14 @@ module pipeline_control (
                 alu_op_type             = `CTL_ALU_ADD;
                 reg_writeback_select    = `CTL_WRITEBACK_ALU;
             end
-    
+
             `OPCODE_STORE:
             begin
                 alu_operand_a_select    = `CTL_ALU_A_RS1;
                 alu_operand_b_select    = `CTL_ALU_B_IMM;
                 alu_op_type             = `CTL_ALU_ADD;
             end
-    
+
             `OPCODE_OP:
             begin
                 alu_operand_a_select    = `CTL_ALU_A_RS1;
@@ -126,21 +126,21 @@ module pipeline_control (
                 reg_writeback_select    = `CTL_WRITEBACK_ALU;
                 alu_op_type             = `CTL_ALU_OP;
             end
-    
+
             `OPCODE_LUI:
             begin
                 alu_operand_a_select    = `CTL_ALU_A_RS1;
                 alu_operand_b_select    = `CTL_ALU_B_RS2;
                 reg_writeback_select    = `CTL_WRITEBACK_IMM;
             end
-    
+
             `OPCODE_BRANCH:
             begin
                 alu_operand_a_select    = `CTL_ALU_A_RS1;
                 alu_operand_b_select    = `CTL_ALU_B_RS2;
                 alu_op_type             = `CTL_ALU_BRANCH;
             end
-    
+
             `OPCODE_JALR:
             begin
                 alu_operand_a_select    = `CTL_ALU_A_RS1;
@@ -148,7 +148,7 @@ module pipeline_control (
                 alu_op_type             = `CTL_ALU_ADD;
                 reg_writeback_select    = `CTL_WRITEBACK_PC4;
             end
-    
+
             `OPCODE_JAL:
             begin
                 alu_operand_a_select    = `CTL_ALU_A_PC;
@@ -156,7 +156,7 @@ module pipeline_control (
                 alu_op_type             = `CTL_ALU_ADD;
                 reg_writeback_select    = `CTL_WRITEBACK_PC4;
             end
-    
+
             default: ;
         endcase
     end

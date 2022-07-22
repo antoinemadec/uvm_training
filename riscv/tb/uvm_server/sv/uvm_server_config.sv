@@ -6,7 +6,7 @@ class uvm_server_config extends uvm_object;
   // Do not register config class with the factory
 
   virtual uvm_server_if    vif;
-                  
+
   bit [31:0] cmd_address;
   bit [31:0] fifo_data_to_uvm_address[UVM_SERVER_FIFO_NB];
   bit [31:0] fifo_data_to_sw_address[UVM_SERVER_FIFO_NB];
@@ -14,7 +14,7 @@ class uvm_server_config extends uvm_object;
 
   extern function new(string name = "");
 
-endclass : uvm_server_config 
+endclass : uvm_server_config
 
 
 function uvm_server_config::new(string name = "");

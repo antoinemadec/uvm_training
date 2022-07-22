@@ -42,6 +42,6 @@ module toplevel (
         .write_enable           (bus_write_enable),
         .byte_enable            (bus_byte_enable)
     );
-    
+
 endmodule
 

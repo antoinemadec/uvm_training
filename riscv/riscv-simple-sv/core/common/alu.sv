@@ -19,9 +19,9 @@ module alu (
         logic [63:0] unsigned_multiplication;
         logic [63:0] signed_unsigned_multiplication;
     `endif
-    
+
     assign result_equal_zero = (result == 32'b0);
-    
+
     always_comb begin
         result = `ZERO;
         case (alu_function)
@@ -70,7 +70,7 @@ module alu (
                 result = `ZERO;
         endcase
     end
-    
+
     `ifdef M_MODULE
         always_comb begin
             signed_multiplication   = operand_a * operand_b;

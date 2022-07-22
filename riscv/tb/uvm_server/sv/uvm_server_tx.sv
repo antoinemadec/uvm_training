@@ -1,7 +1,7 @@
 `ifndef UVM_SERVER_SEQ_ITEM_SV
 `define UVM_SERVER_SEQ_ITEM_SV
 
-class uvm_server_tx extends uvm_sequence_item; 
+class uvm_server_tx extends uvm_sequence_item;
 
   `uvm_object_utils(uvm_server_tx)
 
@@ -20,7 +20,7 @@ class uvm_server_tx extends uvm_sequence_item;
   extern function void do_unpack(uvm_packer packer);
   extern function string convert2string();
 
-endclass : uvm_server_tx 
+endclass : uvm_server_tx
 
 
 function uvm_server_tx::new(string name = "");
@@ -33,7 +33,7 @@ function void uvm_server_tx::do_copy(uvm_object rhs);
   if (!$cast(rhs_, rhs))
     `uvm_fatal(get_type_name(), "Cast of rhs object failed")
   super.do_copy(rhs);
-  rwb  = rhs_.rwb; 
+  rwb  = rhs_.rwb;
   addr = rhs_.addr;
   data = rhs_.data;
 endfunction : do_copy
@@ -63,7 +63,7 @@ endfunction : do_print
 function void uvm_server_tx::do_record(uvm_recorder recorder);
   super.do_record(recorder);
   // Use the record macros to record the item fields:
-  `uvm_record_field("rwb",  rwb) 
+  `uvm_record_field("rwb",  rwb)
   `uvm_record_field("addr", addr)
   `uvm_record_field("data", data)
 endfunction : do_record
@@ -71,17 +71,17 @@ endfunction : do_record
 
 function void uvm_server_tx::do_pack(uvm_packer packer);
   super.do_pack(packer);
-  `uvm_pack_int(rwb)  
-  `uvm_pack_int(addr) 
-  `uvm_pack_int(data) 
+  `uvm_pack_int(rwb)
+  `uvm_pack_int(addr)
+  `uvm_pack_int(data)
 endfunction : do_pack
 
 
 function void uvm_server_tx::do_unpack(uvm_packer packer);
   super.do_unpack(packer);
-  `uvm_unpack_int(rwb)  
-  `uvm_unpack_int(addr) 
-  `uvm_unpack_int(data) 
+  `uvm_unpack_int(rwb)
+  `uvm_unpack_int(addr)
+  `uvm_unpack_int(data)
 endfunction : do_unpack
 
 
@@ -89,7 +89,7 @@ function string uvm_server_tx::convert2string();
   string s;
   $sformat(s, "%s\n", super.convert2string());
   $sformat(s, {"%s\n",
-    "rwb  = 'h%0h  'd%0d\n", 
+    "rwb  = 'h%0h  'd%0d\n",
     "addr = 'h%0h  'd%0d\n",
     "data = 'h%0h  'd%0d\n"},
     get_full_name(), rwb, rwb, addr, addr, data, data);

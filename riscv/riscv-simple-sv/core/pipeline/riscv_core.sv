@@ -97,7 +97,7 @@ module riscv_core (
         .want_stall             (want_stall),
         .inject_bubble          (inject_bubble)
     );
-    
+
     data_memory_interface data_memory_interface (
         .clock                  (clock),
         .read_enable            (read_enable),
@@ -113,6 +113,6 @@ module riscv_core (
         .bus_write_enable       (bus_write_enable),
         .bus_byte_enable        (bus_byte_enable)
     );
-    
+
 endmodule
 

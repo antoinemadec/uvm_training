@@ -12,12 +12,12 @@ class top_env extends uvm_env;
   uvm_server        m_uvm_server;
 
   top_config        m_config;
-                
+
   extern function void build_phase(uvm_phase phase);
   extern function void connect_phase(uvm_phase phase);
   extern function void end_of_elaboration_phase(uvm_phase phase);
 
-endclass : top_env 
+endclass : top_env
 
 
 function top_env::new(string name, uvm_component parent);
@@ -28,7 +28,7 @@ endfunction : new
 function void top_env::build_phase(uvm_phase phase);
   `uvm_info(get_type_name(), "In build_phase", UVM_HIGH)
 
-  if (!uvm_config_db #(top_config)::get(this, "", "config", m_config)) 
+  if (!uvm_config_db #(top_config)::get(this, "", "config", m_config))
     `uvm_error(get_type_name(), "Unable to get top_config")
 
   m_uvm_server_config = m_config.m_uvm_server_config;

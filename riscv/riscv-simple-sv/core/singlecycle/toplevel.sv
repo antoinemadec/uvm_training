@@ -39,7 +39,7 @@ module toplevel (
         .address                (pc),
         .read_data              (inst)
     );
-    
+
     example_data_memory_bus data_memory_bus (
         .clock                  (clock),
         .address                (bus_address),
@@ -49,6 +49,6 @@ module toplevel (
         .write_enable           (bus_write_enable),
         .byte_enable            (bus_byte_enable)
     );
-    
+
 endmodule
 

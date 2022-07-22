@@ -21,7 +21,7 @@ module alu_control (
     `ifdef M_MODULE
     logic [4:0] m_extension_funct;
     `endif
-    
+
     always_comb
         case (alu_op_type)
             `CTL_ALU_ADD:           alu_function = `ALU_ADD;
@@ -55,14 +55,14 @@ module alu_control (
             `FUNCT3_ALU_AND:        default_funct = `ALU_AND;
             default:                default_funct = 5'bx;
         endcase
-    
+
     always_comb
         case (inst_funct3)
             `FUNCT3_ALU_ADD_SUB:    secondary_funct = `ALU_SUB;
             `FUNCT3_ALU_SHIFTR:     secondary_funct = `ALU_SRA;
             default:                secondary_funct = 5'bx;
         endcase
-    
+
     always_comb
         case (inst_funct3)
             `FUNCT3_BRANCH_EQ:  branch_funct = `ALU_SEQ;
@@ -73,7 +73,7 @@ module alu_control (
             `FUNCT3_BRANCH_GEU: branch_funct = `ALU_SLTU;
             default:            branch_funct = 5'bx;
         endcase
-    
+
     `ifdef M_MODULE
         always_comb
             case (inst_funct3)

@@ -18,7 +18,7 @@ module immediate_generator (
     // B = { {20{inst[31]}}, inst[7],                            inst[30:25], inst[11:8],   1'b0  };
     // U = { {1{inst[31]}},  inst[30:20], inst[19:12],                                      12'b0 };
     // J = { {12{inst[31]}},              inst[19:12], inst[20], inst[30:25], inst[24:21],  1'b0  };
-    
+
     always_comb begin
         immediate = 32'b0;
         case (inst[6:0]) // Opcode

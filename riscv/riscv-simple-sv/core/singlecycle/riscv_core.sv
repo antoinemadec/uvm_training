@@ -74,7 +74,7 @@ module riscv_core (
         .alu_function           (alu_function),
         .next_pc_select         (next_pc_select)
     );
-    
+
     data_memory_interface data_memory_interface (
         .clock                  (clock),
         .read_enable            (read_enable),
@@ -90,6 +90,6 @@ module riscv_core (
         .bus_write_enable       (bus_write_enable),
         .bus_byte_enable        (bus_byte_enable)
     );
-    
+
 endmodule
 

@@ -124,6 +124,10 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
 
 ### week3 day5
   1. resources & discussion
+      - fork
+        - look at [this website](https://verificationguide.com/systemverilog/systemverilog-fork-join/)
+        - join join_any join_none
+        - disable fork, wait fork
       - pipelined protocols
           - use [get() and put()](https://www.chipverify.com/uvm/driver-using-get-and-put) instead of [get_next_item() and item_done()](https://www.chipverify.com/uvm/uvm-using-get-next-item)
           - see example [here](https://github.com/antoinemadec/doc/blob/master/uvm.txt#L317)

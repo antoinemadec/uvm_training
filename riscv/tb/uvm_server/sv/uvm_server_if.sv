@@ -4,6 +4,9 @@
   `define UVM_SERVER_MEM top_tb.th.toplevel.data_memory_bus
   `define UVM_SERVER_RO_MEM top_tb.th.toplevel.text_memory_bus
 
+  `define STRINGIFY(x) `"x`"
+
+
 interface uvm_server_if();
 
   timeunit      1ns;
@@ -36,7 +39,8 @@ interface uvm_server_if();
 
 
   function void backdoor_write(bit [31:0] addr, bit [31:0] wdata);
-    `UVM_SERVER_MEM.data_memory.mem[addr[16:2]] = wdata;
+    assert(uvm_hdl_deposit($sformatf("%0s.data_memory.mem[%0d]", `STRINGIFY(`UVM_SERVER_MEM),
+      addr[16:2]), wdata));
     `uvm_info("uvm_server_if", $sformatf("backdoor_write 0x%x -> [0x%x]", wdata, addr), UVM_DEBUG);
   endfunction : backdoor_write
 
@@ -56,7 +60,8 @@ interface uvm_server_if();
       char_idx = i%4;
       if (char_idx == 0) begin
         word_idx = i>>2;
-        rdata = `UVM_SERVER_RO_MEM.text_memory.mem[addr[16:2] + word_idx];
+        assert(uvm_hdl_read($sformatf("%0s.text_memory.mem[%0d]", `STRINGIFY(`UVM_SERVER_RO_MEM),
+          addr[16:2] + word_idx), rdata));
       end
       char = rdata[char_idx*8 +: 8];
       str = {str, char};

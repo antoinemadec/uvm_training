@@ -20,7 +20,7 @@ module example_data_memory (
     // logic [31:0] mem[0:2**(`DATA_BITS-2)-1];
     logic [31:0] mem[int];
 
-    assign q = mem[address];
+    assign q = mem[$isunknown(address) ? 0:address];
 
     always_ff @(posedge clock)
         if (wren) begin

@@ -6,16 +6,27 @@ class uvm_server extends uvm_component;
 
   `uvm_component_utils(uvm_server)
 
-  //-----------------------------------------------------------
-  // low-level API
-  //-----------------------------------------------------------
-  uvm_event               event_to_uvm[UVM_SERVER_EVENT_NB];
-  uvm_event               event_to_sw[UVM_SERVER_EVENT_NB];
-  bit [31:0]              fifo_data_to_uvm[UVM_SERVER_FIFO_NB][$];
-  bit [31:0]              fifo_data_to_sw[UVM_SERVER_FIFO_NB][$];
-  //-----------------------------------------------------------
+  // ___________________________________________________________________________________________
+  //             C-side                              |              UVM-side
+  // ________________________________________________|__________________________________________
+  // uvm_server_gen_event(0)                      ---|-->   uvm_server_wait_event(0)
+  // uvm_server_wait_event(16)                    <--|---   uvm_server_gen_event(16)
+  // uvm_server_push_data(0, 0xdeadbeef)          ---|-->   uvm_server_pull_data(0, data)
+  // uvm_server_pull_data(1 , &data)              <--|---   uvm_server_push_data(1, data)
+  // uvm_server_print_info(1, "data=0x%0x", data) ---|-->   `uvm_info(...)
+  // uvm_server_quit()                            ---|-->   end of simulation
 
-  uvm_tlm_analysis_fifo#(uvm_server_tx) m_mon_fifo;
+  // high-level API
+  extern function void uvm_server_gen_event(int event_idx);
+  extern task uvm_server_wait_event(int event_idx);
+  extern function void uvm_server_push_data(input int fifo_idx, input [31:0] data);
+  extern function bit  uvm_server_pull_data(input int fifo_idx, output [31:0] data);
+
+  uvm_tlm_analysis_fifo#(uvm_server_tx) monitor_fifo;
+  uvm_event                             event_to_uvm[UVM_SERVER_EVENT_NB];
+  uvm_event                             event_to_sw[UVM_SERVER_EVENT_NB];
+  bit [31:0]                            fifo_data_to_uvm[UVM_SERVER_FIFO_NB][$];
+  bit [31:0]                            fifo_data_to_sw[UVM_SERVER_FIFO_NB][$];
 
   uvm_server_config       m_config;
   uvm_server_monitor      m_monitor;
@@ -49,7 +60,7 @@ endclass : uvm_server
 function  uvm_server::new(string name, uvm_component parent);
   uvm_event_pool event_pool = uvm_event_pool::get_global_pool();
   super.new(name, parent);
-  m_mon_fifo = new("m_mon_fifo", this);
+  monitor_fifo = new("monitor_fifo", this);
   foreach (event_to_uvm[i]) begin
     event_to_uvm[i] = event_pool.get($sformatf("uvm_server_to_uvm_%d", i));
     event_to_sw[i] = event_pool.get($sformatf("uvm_server_to_sw_%d", i));
@@ -72,13 +83,41 @@ function void uvm_server::connect_phase(uvm_phase phase);
   vif                = m_config.vif;
   m_monitor.vif      = m_config.vif;
   m_monitor.m_config = m_config;
-  m_monitor.analysis_port.connect(m_mon_fifo.analysis_export);
+  m_monitor.analysis_port.connect(monitor_fifo.analysis_export);
 endfunction : connect_phase
+
+
+// TODO: implement high-level API
+// __START_REMOVE_SECTION__
+function void uvm_server::uvm_server_gen_event(int event_idx);
+  event_to_sw[event_idx].trigger();
+endfunction : uvm_server_gen_event
+
+
+task uvm_server::uvm_server_wait_event(int event_idx);
+  event_to_uvm[event_idx].wait_on();
+  event_to_uvm[event_idx].reset();
+endtask : uvm_server_wait_event
+
+
+function void uvm_server::uvm_server_push_data(input int fifo_idx, input [31:0] data);
+  fifo_data_to_sw[fifo_idx].push_back(data);
+endfunction : uvm_server_push_data
+
+
+function bit uvm_server::uvm_server_pull_data(input int fifo_idx, output [31:0] data);
+  if (fifo_data_to_uvm[fifo_idx].size() == 0) begin
+    return 0;
+  end
+  data = fifo_data_to_uvm[fifo_idx].pop_front();
+  return 1;
+endfunction : uvm_server_pull_data
+// __END_REMOVE_SECTION__
 
 
 task uvm_server::run_phase(uvm_phase phase);
   phase.raise_objection(this);
-  // TODO: proccess m_mon_fifo
+  // TODO: proccess monitor_fifo
   // __START_REMOVE_SECTION__
   fork
     update_data_to_sw();
@@ -94,7 +133,7 @@ endtask : run_phase
 task uvm_server::process_ram_access();
     forever begin
       uvm_server_tx tx;
-      m_mon_fifo.get(tx);
+      monitor_fifo.get(tx);
       if (tx.addr >= m_config.cmd_address && tx.addr <= m_config.fifo_data_to_sw_empty_address) begin
         `uvm_info(get_type_name(), {"received new packet from monitor: ", tx.sprint()}, UVM_DEBUG)
       end

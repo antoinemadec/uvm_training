@@ -7,6 +7,7 @@ class uvm_server_config extends uvm_object;
 
   virtual uvm_server_if    vif;
 
+  // low-level API
   bit [31:0] cmd_address;
   bit [31:0] fifo_data_to_uvm_address[UVM_SERVER_FIFO_NB];
   bit [31:0] fifo_data_to_sw_address[UVM_SERVER_FIFO_NB];

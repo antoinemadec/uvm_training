@@ -18,11 +18,15 @@ Write system-level tests in C, make them communicate with a UVM server
 ## III- Practical Case Study: RiscV
 ### day1: architecture and API
   - why co-simulation?
+    - reuse C code on emulator/FPGA/ASIC
+    - SW engineers can now code tests
   - explain the architecture
     - address range in RAM
       - C write -> monitor -> action
       - SV backdoor write -> C read -> action
   - code API
+    - C side: look at uvm_server.h and uvm_server.c
+    - SV/UVM side: look at top_th.sv, uvm_server_config.sv and uvm_server.sv
 ### day2: my first command
   - look at the linker script + uvm_server __attribute__
   - look at the interface + monitor + sequence_item

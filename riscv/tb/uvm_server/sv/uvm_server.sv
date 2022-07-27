@@ -58,12 +58,11 @@ endclass : uvm_server
 
 
 function  uvm_server::new(string name, uvm_component parent);
-  uvm_event_pool event_pool = uvm_event_pool::get_global_pool();
   super.new(name, parent);
   monitor_fifo = new("monitor_fifo", this);
   foreach (event_to_uvm[i]) begin
-    event_to_uvm[i] = event_pool.get($sformatf("uvm_server_to_uvm_%d", i));
-    event_to_sw[i] = event_pool.get($sformatf("uvm_server_to_sw_%d", i));
+    event_to_uvm[i] = new($sformatf("event_to_uvm_%d", i));
+    event_to_sw[i] = new($sformatf("event_to_sw_%d", i));
   end
 endfunction : new
 

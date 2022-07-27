@@ -10,7 +10,7 @@ package top_test_pkg;
   import uvm_server_pkg::*;
   import top_pkg::*;
 
-  `include "top_test.sv"
+  `include "basic_test.sv"
 
 endpackage : top_test_pkg
 

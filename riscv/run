@@ -49,4 +49,4 @@ xrun -q                                               \
   $TB_DIR/top_test/sv/top_test_pkg.sv                 \
   $TB_DIR/top_tb/sv/top_th.sv                         \
   $TB_DIR/top_tb/sv/top_tb.sv                         \
-  +UVM_TESTNAME=top_test
+  +UVM_TESTNAME=$test_name

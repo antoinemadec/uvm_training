@@ -5,12 +5,11 @@ Write system-level tests in C, make them communicate with a UVM server
 
 
 # TODO
-  - support nested wait_event
+  - support nested wait_event ?
     - use dedicated wait_event_address
     - 1 bit per index
     - SW clear bit when done
-  - put all uvm_server fucntions in uvm_server.sv (no split in test + uvm_server.sv)
-  - make monitor appear in the png
+  - add stressful tests
 
 
 # Agenda

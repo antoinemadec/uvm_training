@@ -11,6 +11,7 @@ package top_test_pkg;
   import top_pkg::*;
 
   `include "basic_test.sv"
+  `include "print_test.sv"
 
 endpackage : top_test_pkg
 

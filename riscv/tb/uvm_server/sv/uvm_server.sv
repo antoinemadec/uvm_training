@@ -54,6 +54,7 @@ class uvm_server extends uvm_component;
   // __END_REMOVE_SECTION__
   extern function string str_replace(string str, string pattern, string replacement);
   extern function string str_format(input string str, ref bit [31:0] q[$]);
+  extern function string str_format_one_arg(input string str, bit [31:0] arg, bit fmt_is_string);
 endclass : uvm_server
 
 
@@ -283,29 +284,48 @@ function string uvm_server::str_format(input string str, ref bit [31:0] q[$]);
   string s;
   bit fmt_start;
   int fmt_cnt;
+  bit fmt_is_string;
+
+  str = str_replace(str, "%%", "__pct__");
+
   fmt_start = 0;
   s = "";
-  str = str_replace(str, "%%", "__pct__");
   foreach (str[i]) begin
     s = {s, str[i]};
     case (str[i])
       "%", " ", "\t", "\n": begin
         if (fmt_start && fmt_cnt > 0) begin
-          s = $sformatf(s, q.pop_front());
+          s = str_format_one_arg(s, q.pop_front(), fmt_is_string);
         end
-        fmt_cnt = 0;
         fmt_start = (str[i] == "%");
+        fmt_cnt = 0;
+        fmt_is_string = 0;
       end
       default: begin
         fmt_cnt ++;
+        if (str[i] == "s") begin
+          fmt_is_string = 1;
+        end
       end
     endcase
   end
   if (fmt_start && fmt_cnt > 0) begin
-    s = $sformatf(s, q.pop_front());
+    s = str_format_one_arg(s, q.pop_front(), fmt_is_string);
   end
+
   s = str_replace(s, "__pct__", "%");
   return s;
+endfunction
+
+
+function string uvm_server::str_format_one_arg(input string str, bit [31:0] arg, bit fmt_is_string);
+  if (fmt_is_string) begin
+    str = $sformatf(str, vif.backdoor_get_string(arg));
+  end
+  else begin
+    str = $sformatf(str, arg);
+  end
+  return str;
 endfunction
 
 

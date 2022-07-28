@@ -10,8 +10,10 @@ package top_test_pkg;
   import uvm_server_pkg::*;
   import top_pkg::*;
 
-  `include "basic_test.sv"
+  `include "base_test.sv"
+  `include "quit_test.sv"
   `include "print_test.sv"
+  `include "basic_test.sv"
 
 endpackage : top_test_pkg
 

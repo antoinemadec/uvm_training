@@ -7,13 +7,20 @@ class uvm_server extends uvm_component;
   `uvm_component_utils(uvm_server)
 
   // ___________________________________________________________________________________________
-  //             C-side                              |              UVM-side
+  //             C-side                              |              UVM-side        
   // ________________________________________________|__________________________________________
-  // uvm_server_gen_event(0)                      ---|-->   uvm_server_wait_event(0)
-  // uvm_server_wait_event(16)                    <--|---   uvm_server_gen_event(16)
+  // ...                                             |      uvm_server_wait_event(0) waits
+  // uvm_server_gen_event(0)                      ---|-->   uvm_server_wait_event(0) returns
+  //                                                 |
+  // uvm_server_wait_event(16) waits                 |      ...
+  // uvm_server_wait_event(16) returns            <--|---   uvm_server_gen_event(16)
+  //
   // uvm_server_push_data(0, 0xdeadbeef)          ---|-->   uvm_server_pull_data(0, data)
+  //                                                 |
   // uvm_server_pull_data(1 , &data)              <--|---   uvm_server_push_data(1, data)
+  //                                                 |
   // uvm_server_print_info(1, "data=0x%0x", data) ---|-->   `uvm_info(...)
+  //                                                 |
   // uvm_server_quit()                            ---|-->   end of simulation
 
   // high-level API

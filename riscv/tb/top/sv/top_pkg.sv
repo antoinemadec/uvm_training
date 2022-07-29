@@ -4,7 +4,7 @@ package top_pkg;
 
   import uvm_pkg::*;
 
-  import uvm_server_pkg::*;
+  import uvm_sw_ipc_pkg::*;
 
   `include "top_config.sv"
   `include "top_env.sv"

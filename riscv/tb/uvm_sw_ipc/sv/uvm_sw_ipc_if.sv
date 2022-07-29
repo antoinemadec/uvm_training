@@ -1,20 +1,20 @@
-`ifndef UVM_SERVER_IF_SV
-`define UVM_SERVER_IF_SV
+`ifndef UVM_SW_IPC_IF_SV
+`define UVM_SW_IPC_IF_SV
 
-  `define UVM_SERVER_MEM top_tb.th.toplevel.data_memory_bus
-  `define UVM_SERVER_RO_MEM top_tb.th.toplevel.text_memory_bus
+  `define UVM_SW_IPC_MEM top_tb.th.toplevel.data_memory_bus
+  `define UVM_SW_IPC_RO_MEM top_tb.th.toplevel.text_memory_bus
 
   `define STRINGIFY(x) `"x`"
 
 
-interface uvm_server_if();
+interface uvm_sw_ipc_if();
 
   timeunit      1ns;
   timeprecision 1ps;
 
   `include "uvm_macros.svh"
   import uvm_pkg::*;
-  import uvm_server_pkg::*;
+  import uvm_sw_ipc_pkg::*;
 
 
   wire clock;
@@ -39,9 +39,9 @@ interface uvm_server_if();
 
 
   function void backdoor_write(bit [31:0] addr, bit [31:0] wdata);
-    assert(uvm_hdl_deposit($sformatf("%0s.data_memory.mem[%0d]", `STRINGIFY(`UVM_SERVER_MEM),
+    assert(uvm_hdl_deposit($sformatf("%0s.data_memory.mem[%0d]", `STRINGIFY(`UVM_SW_IPC_MEM),
       addr[16:2]), wdata));
-    `uvm_info("uvm_server_if", $sformatf("backdoor_write 0x%x -> [0x%x]", wdata, addr), UVM_DEBUG);
+    `uvm_info("uvm_sw_ipc_if", $sformatf("backdoor_write 0x%x -> [0x%x]", wdata, addr), UVM_DEBUG);
   endfunction : backdoor_write
 
 
@@ -60,7 +60,7 @@ interface uvm_server_if();
       char_idx = i%4;
       if (char_idx == 0) begin
         word_idx = i>>2;
-        assert(uvm_hdl_read($sformatf("%0s.text_memory.mem[%0d]", `STRINGIFY(`UVM_SERVER_RO_MEM),
+        assert(uvm_hdl_read($sformatf("%0s.text_memory.mem[%0d]", `STRINGIFY(`UVM_SW_IPC_RO_MEM),
           addr[16:2] + word_idx), rdata));
       end
       char = rdata[char_idx*8 +: 8];
@@ -72,7 +72,7 @@ interface uvm_server_if();
   endfunction : backdoor_get_string
 
 
-endinterface : uvm_server_if
+endinterface : uvm_sw_ipc_if
 
-`endif // UVM_SERVER_IF_SV
+`endif // UVM_SW_IPC_IF_SV
 

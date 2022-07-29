@@ -18,16 +18,16 @@ task basic_test::run_phase(uvm_phase phase);
   bit [31:0] data_to_uvm;
   super.run_phase(phase);
 
-  `uvm_server_wait_event(16);
+  `uvm_sw_ipc_wait_event(16);
   `uvm_info(get_type_name(), "running sequence", UVM_LOW);
   #1000;
   `uvm_info(get_type_name(), "sequence done", UVM_LOW);
-  `uvm_server_push_data(0, 32'hdeadbeef);
-  `uvm_server_push_data(0, 32'hcafedeca);
+  `uvm_sw_ipc_push_data(0, 32'hdeadbeef);
+  `uvm_sw_ipc_push_data(0, 32'hcafedeca);
   `uvm_info(get_type_name(), "data pushed", UVM_LOW);
-  `uvm_server_gen_event(1);
-  `uvm_server_wait_event(0);
-  while (`uvm_server_pull_data(0, data_to_uvm)) begin
+  `uvm_sw_ipc_gen_event(1);
+  `uvm_sw_ipc_wait_event(0);
+  while (`uvm_sw_ipc_pull_data(0, data_to_uvm)) begin
     `uvm_info(get_type_name(), $sformatf("data_to_uvm = 0x%0x", data_to_uvm), UVM_LOW);
   end
 endtask : run_phase

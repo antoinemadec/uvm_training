@@ -1,9 +1,9 @@
-`ifndef UVM_SERVER_SEQ_ITEM_SV
-`define UVM_SERVER_SEQ_ITEM_SV
+`ifndef UVM_SW_IPC_SEQ_ITEM_SV
+`define UVM_SW_IPC_SEQ_ITEM_SV
 
-class uvm_server_tx extends uvm_sequence_item;
+class uvm_sw_ipc_tx extends uvm_sequence_item;
 
-  `uvm_object_utils(uvm_server_tx)
+  `uvm_object_utils(uvm_sw_ipc_tx)
 
   // Transaction variables
   bit rwb;
@@ -20,16 +20,16 @@ class uvm_server_tx extends uvm_sequence_item;
   extern function void do_unpack(uvm_packer packer);
   extern function string convert2string();
 
-endclass : uvm_server_tx
+endclass : uvm_sw_ipc_tx
 
 
-function uvm_server_tx::new(string name = "");
+function uvm_sw_ipc_tx::new(string name = "");
   super.new(name);
 endfunction : new
 
 
-function void uvm_server_tx::do_copy(uvm_object rhs);
-  uvm_server_tx rhs_;
+function void uvm_sw_ipc_tx::do_copy(uvm_object rhs);
+  uvm_sw_ipc_tx rhs_;
   if (!$cast(rhs_, rhs))
     `uvm_fatal(get_type_name(), "Cast of rhs object failed")
   super.do_copy(rhs);
@@ -39,9 +39,9 @@ function void uvm_server_tx::do_copy(uvm_object rhs);
 endfunction : do_copy
 
 
-function bit uvm_server_tx::do_compare(uvm_object rhs, uvm_comparer comparer);
+function bit uvm_sw_ipc_tx::do_compare(uvm_object rhs, uvm_comparer comparer);
   bit result;
-  uvm_server_tx rhs_;
+  uvm_sw_ipc_tx rhs_;
   if (!$cast(rhs_, rhs))
     `uvm_fatal(get_type_name(), "Cast of rhs object failed")
   result = super.do_compare(rhs, comparer);
@@ -52,7 +52,7 @@ function bit uvm_server_tx::do_compare(uvm_object rhs, uvm_comparer comparer);
 endfunction : do_compare
 
 
-function void uvm_server_tx::do_print(uvm_printer printer);
+function void uvm_sw_ipc_tx::do_print(uvm_printer printer);
   if (printer.knobs.sprint == 0)
     `uvm_info(get_type_name(), convert2string(), UVM_MEDIUM)
   else
@@ -60,7 +60,7 @@ function void uvm_server_tx::do_print(uvm_printer printer);
 endfunction : do_print
 
 
-function void uvm_server_tx::do_record(uvm_recorder recorder);
+function void uvm_sw_ipc_tx::do_record(uvm_recorder recorder);
   super.do_record(recorder);
   // Use the record macros to record the item fields:
   `uvm_record_field("rwb",  rwb)
@@ -69,7 +69,7 @@ function void uvm_server_tx::do_record(uvm_recorder recorder);
 endfunction : do_record
 
 
-function void uvm_server_tx::do_pack(uvm_packer packer);
+function void uvm_sw_ipc_tx::do_pack(uvm_packer packer);
   super.do_pack(packer);
   `uvm_pack_int(rwb)
   `uvm_pack_int(addr)
@@ -77,7 +77,7 @@ function void uvm_server_tx::do_pack(uvm_packer packer);
 endfunction : do_pack
 
 
-function void uvm_server_tx::do_unpack(uvm_packer packer);
+function void uvm_sw_ipc_tx::do_unpack(uvm_packer packer);
   super.do_unpack(packer);
   `uvm_unpack_int(rwb)
   `uvm_unpack_int(addr)
@@ -85,7 +85,7 @@ function void uvm_server_tx::do_unpack(uvm_packer packer);
 endfunction : do_unpack
 
 
-function string uvm_server_tx::convert2string();
+function string uvm_sw_ipc_tx::convert2string();
   string s;
   $sformat(s, "%s\n", super.convert2string());
   $sformat(s, {"%s\n",
@@ -97,5 +97,5 @@ function string uvm_server_tx::convert2string();
 endfunction : convert2string
 
 
-`endif // UVM_SERVER_SEQ_ITEM_SV
+`endif // UVM_SW_IPC_SEQ_ITEM_SV
 

@@ -8,8 +8,8 @@ class top_env extends uvm_env;
   extern function new(string name, uvm_component parent);
 
   // Child agents
-  uvm_server_config m_uvm_server_config;
-  uvm_server        m_uvm_server;
+  uvm_sw_ipc_config m_uvm_sw_ipc_config;
+  uvm_sw_ipc        m_uvm_sw_ipc;
 
   top_config        m_config;
 
@@ -31,10 +31,10 @@ function void top_env::build_phase(uvm_phase phase);
   if (!uvm_config_db #(top_config)::get(this, "", "config", m_config))
     `uvm_error(get_type_name(), "Unable to get top_config")
 
-  m_uvm_server_config = m_config.m_uvm_server_config;
-  uvm_config_db #(uvm_server_config)::set(this, "m_uvm_server", "config", m_uvm_server_config);
+  m_uvm_sw_ipc_config = m_config.m_uvm_sw_ipc_config;
+  uvm_config_db #(uvm_sw_ipc_config)::set(this, "m_uvm_sw_ipc", "config", m_uvm_sw_ipc_config);
 
-  m_uvm_server = uvm_server::type_id::create("m_uvm_server", this);
+  m_uvm_sw_ipc = uvm_sw_ipc::type_id::create("m_uvm_sw_ipc", this);
 
 endfunction : build_phase
 

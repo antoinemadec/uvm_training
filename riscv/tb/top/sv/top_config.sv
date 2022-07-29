@@ -5,7 +5,7 @@ class top_config extends uvm_object;
 
   // Do not register config class with the factory
 
-  rand uvm_server_config  m_uvm_server_config;
+  rand uvm_sw_ipc_config  m_uvm_sw_ipc_config;
 
   // You can insert variables here by setting config_var in file common.tpl
 
@@ -17,7 +17,7 @@ endclass : top_config
 function top_config::new(string name = "");
   super.new(name);
 
-  m_uvm_server_config                 = new("m_uvm_server_config");
+  m_uvm_sw_ipc_config                 = new("m_uvm_sw_ipc_config");
 
 endfunction : new
 

@@ -11,11 +11,11 @@ class base_test extends uvm_test;
   extern function void build_phase(uvm_phase phase);
   extern task run_phase(uvm_phase phase);
 
-  // uvm_server defines
-  `define uvm_server_gen_event  m_env.m_uvm_server.uvm_server_gen_event
-  `define uvm_server_wait_event m_env.m_uvm_server.uvm_server_wait_event
-  `define uvm_server_push_data  m_env.m_uvm_server.uvm_server_push_data
-  `define uvm_server_pull_data  m_env.m_uvm_server.uvm_server_pull_data
+  // uvm_sw_ipc defines
+  `define uvm_sw_ipc_gen_event  m_env.m_uvm_sw_ipc.uvm_sw_ipc_gen_event
+  `define uvm_sw_ipc_wait_event m_env.m_uvm_sw_ipc.uvm_sw_ipc_wait_event
+  `define uvm_sw_ipc_push_data  m_env.m_uvm_sw_ipc.uvm_sw_ipc_push_data
+  `define uvm_sw_ipc_pull_data  m_env.m_uvm_sw_ipc.uvm_sw_ipc_pull_data
 
 endclass : base_test
 

@@ -1,15 +1,14 @@
 # uvm_training - risc-v
-Write system-level tests in C, make them communicate with a UVM server
+C-UVM co-simulation : write system-level tests in C, make them communicate with UVM
 
 ![](.images/uvm_sw_ipc.png)
 
 
 # TODO
-  - support nested wait_event ?
-    - use dedicated wait_event_address
-    - 1 bit per index
-    - SW clear bit when done
-  - add stressful tests
+  - add check on fifo size
+  - pass plusarg and option to xrun
+  - add more tests
+  - vif with multiple mem types
 
 
 # Agenda
@@ -31,18 +30,39 @@ Write system-level tests in C, make them communicate with a UVM server
       - look at top_th.sv, uvm_sw_ipc_config.sv and uvm_sw_ipc.sv
       - look at the interface + monitor + sequence_item
 ### day2: my first command
-  - implement uvm_sw_ipc_quit()
+  - implement the following function:
+```c
+void uvm_sw_ipc_quit(void);
+```
+    - test with **./run quit_test**
 ### day3: C->UVM
-  - implement uvm_print_\*()
+  - implement the following functions:
+```c
+void uvm_sw_ipc_print_info(uint32_t arg_cnt, char const *const str,  ...);
+void uvm_sw_ipc_print_warning(uint32_t arg_cnt, char const *const str,  ...);
+void uvm_sw_ipc_print_error(uint32_t arg_cnt, char const *const str,  ...);
+void uvm_sw_ipc_print_fatal(uint32_t arg_cnt, char const *const str,  ...);
+`````
     - va_arg
     - string in text_memory
-  - void uvm_sw_ipc_gen_event(uint32_t event_idx);
-    - uvm_event
-  - void uvm_sw_ipc_push_data(uint32_t fifo_idx, uint32_t data);
+    - test with **./run print_test**
+  - implement the following functions and their UVM counterparts:
+  ```c
+void uvm_sw_ipc_gen_event(uint32_t event_idx);
+void uvm_sw_ipc_push_data(uint32_t fifo_idx, uint32_t data);
+  ```
+    - uvm_event, queues
+    - test with **./run gen_event_test** and **./run push_data_test**
 ### day4: UVM->C
-  - void uvm_sw_ipc_wait_event(uint32_t event_idx);
-  - bool uvm_sw_ipc_pull_data(uint32_t fifo_idx, uint32_t \*data);
+  - implement the following functions and their UVM counterparts:
+```c
+void uvm_sw_ipc_wait_event(uint32_t event_idx);
+bool uvm_sw_ipc_pull_data(uint32_t fifo_idx, uint32_t \*data);
+```
+    - test with **./run wait_event_test** and **./run pull_data_test**
 ### day5: to go further
-  - nested wait_event
-  - use registers instead of RAM
-  - uvm_sw_ipc in a TB ram
+  - test everything works with **./run basic_test**
+  - discussion
+    - IRQ, multi-threading
+    - use registers instead of RAM
+    - uvm_sw_ipc in a TB ram

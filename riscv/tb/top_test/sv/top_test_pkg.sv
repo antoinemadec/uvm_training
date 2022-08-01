@@ -13,6 +13,10 @@ package top_test_pkg;
   `include "base_test.sv"
   `include "quit_test.sv"
   `include "print_test.sv"
+  `include "gen_event_test.sv"
+  `include "push_data_test.sv"
+  `include "wait_event_test.sv"
+  `include "pull_data_test.sv"
   `include "basic_test.sv"
 
 endpackage : top_test_pkg

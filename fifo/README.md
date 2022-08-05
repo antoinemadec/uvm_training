@@ -44,11 +44,9 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
 
 
 ## III- Practical Case Study: Fifo
+  - [populate your git repo](https://github.com/antoinemadec/uvm_training#how_to_copy_the_repo) 
 ### week3 day1
-  1. create a **private** git repo
-  2. use **./copy_repo.sh** to copy this repo in your repo
-  3. commit and push, look at this README in Github
-  4. easier UVM
+  - easier UVM
       1. here is the [reference guide](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/easier-uvm-code-generator/easier-uvm-code-generator-reference-guide/)
       2. in **./fifo**, create a template for each agent named **fifo_in** and **fifo_out**
           - defining a good sequence_item is very important
@@ -67,9 +65,6 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
       6. make sure it compiles with **./run**
           - comment out do_mon() in monitors for now
           - comment out do_drive() in drivers for now
-  5. commit
-      - generate a .gitignore
-      - commit + push
 
 ### week3 day2
   1. add the following in **top_tb.sv** to dump all wavesforms

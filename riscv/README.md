@@ -35,7 +35,7 @@ C-UVM co-simulation : write system-level tests in C, make them communicate with 
 ```c
 void uvm_sw_ipc_quit(void);
 ```
-    - test with **./run quit_test**
+  - test with **./run quit_test**
 ### day3: C->UVM
   - implement the following functions:
 ```c
@@ -43,15 +43,17 @@ void uvm_sw_ipc_print_info(uint32_t arg_cnt, char const *const str,  ...);
 void uvm_sw_ipc_print_warning(uint32_t arg_cnt, char const *const str,  ...);
 void uvm_sw_ipc_print_error(uint32_t arg_cnt, char const *const str,  ...);
 void uvm_sw_ipc_print_fatal(uint32_t arg_cnt, char const *const str,  ...);
-`````
+```
+
     - va_arg
     - string in text_memory
     - test with **./run print_test**
   - implement the following functions and their UVM counterparts:
-  ```c
+```c
 void uvm_sw_ipc_gen_event(uint32_t event_idx);
 void uvm_sw_ipc_push_data(uint32_t fifo_idx, uint32_t data);
-  ```
+```
+
     - uvm_event, queues
     - test with **./run gen_event_test** and **./run push_data_test**
 ### day4: UVM->C
@@ -60,6 +62,7 @@ void uvm_sw_ipc_push_data(uint32_t fifo_idx, uint32_t data);
 void uvm_sw_ipc_wait_event(uint32_t event_idx);
 bool uvm_sw_ipc_pull_data(uint32_t fifo_idx, uint32_t \*data);
 ```
+
     - test with **./run wait_event_test** and **./run pull_data_test**
 ### day5: to go further
   - test everything works with **./run basic_test**

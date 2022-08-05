@@ -44,7 +44,7 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
 
 
 ## III- Practical Case Study: Fifo
-  - [populate your git repo](https://github.com/antoinemadec/uvm_training#how_to_copy_the_repo) 
+  - [populate your git repo](https://github.com/antoinemadec/uvm_training#how-to-copy-the-repo) 
 ### week3 day1
   - easier UVM
       1. here is the [reference guide](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/easier-uvm-code-generator/easier-uvm-code-generator-reference-guide/)

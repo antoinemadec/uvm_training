@@ -14,7 +14,7 @@ C-UVM co-simulation : write system-level tests in C, make them communicate with 
 # Agenda
 
 ## III- Practical Case Study: RiscV
-  - [populate your git repo](https://github.com/antoinemadec/uvm_training#how_to_copy_the_repo) 
+  - [populate your git repo](https://github.com/antoinemadec/uvm_training#how-to-copy-the-repo) 
 ### day1: architecture and API
   - why co-simulation?
     - reuse C code on emulator/FPGA/ASIC

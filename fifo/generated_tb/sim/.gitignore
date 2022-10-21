@@ -1,7 +1,0 @@
-!compile_ius.sh
-!compile_vcs.sh
-!compile_questa.do
-!compile_riviera.do
-!run_questa
-!waves.do
-*

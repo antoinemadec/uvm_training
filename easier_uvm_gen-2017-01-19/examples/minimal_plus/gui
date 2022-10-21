@@ -1,2 +1,0 @@
-cd generated_tb/sim;
-vsim -novopt -gui -do "do compile_questa.do; run -all"

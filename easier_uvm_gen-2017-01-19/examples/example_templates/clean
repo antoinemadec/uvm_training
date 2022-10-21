@@ -1,4 +1,0 @@
-rm -r project
-rm -r project.bak
-rm *.log
-rm transcript

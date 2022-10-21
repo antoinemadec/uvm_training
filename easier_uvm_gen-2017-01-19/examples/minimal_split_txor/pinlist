@@ -1,5 +1,0 @@
-!bus_if
-bus_clk  clk
-bus_cmd  cmd
-bus_addr addr
-bus_data data

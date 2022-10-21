@@ -1,3 +1,0 @@
-cd project/sim;
-chmod 755 compile_ius.sh
-./compile_ius.sh

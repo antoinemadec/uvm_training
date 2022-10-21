@@ -1,3 +1,0 @@
-cd project/sim;
-chmod 755 compile_vcs.sh
-./compile_vcs.sh

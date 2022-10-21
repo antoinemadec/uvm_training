@@ -71,5 +71,5 @@ dest_dir_abs="$(get_abs_path $dest_dir)"
 cd $src_dir_abs
 rsync -avzpq --files-from=<(git ls-files) . $dest_dir_abs
 
-exclude_files $dest_dir_abs "generated_tb" ".git*" "fifo_*.tpl" "pinlist" || error "exclude_files failed"
+exclude_files $dest_dir_abs "output" ".git*" "fifo_*.conf" || error "exclude_files failed"
 remove_sections $dest_dir_abs || error "remove_sections failed"

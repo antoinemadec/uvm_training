@@ -1,2 +1,0 @@
-cd project/sim;
-vsim -c -do "do compile_questa.do; run -all"

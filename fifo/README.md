@@ -46,25 +46,17 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
 ## III- Practical Case Study: Fifo
   - [populate your git repo](https://github.com/antoinemadec/uvm_training#how-to-copy-the-repo) 
 ### week3 day1
-  - easier UVM
-      1. here is the [reference guide](https://www.doulos.com/knowhow/systemverilog/uvm/easier-uvm/easier-uvm-code-generator/easier-uvm-code-generator-reference-guide/)
-      2. in **./fifo**, create a template for each agent named **fifo_in** and **fifo_out**
+  - [uvm_gen_code](https://github.com/antoinemadec/uvm_code_gen)
+      1. read ./utils/uvm_code_gen/README.md
+      2. in **./fifo**, create a config files for each VIP named **fifo_in.conf** and **fifo_out.conf**
           - defining a good sequence_item is very important
           - use wires in the interface. This is why: [link1](https://verificationacademy.com/forums/systemverilog/wire-vs.-logic-sv-interface) and [link2](https://blogs.sw.siemens.com/verificationhorizons/2013/05/03/wire-vs-reg/)
               > Any signal with more or the potential for more than one driver should be declared as a wire.
-          - add the following in your agent's templates
-              ```sh
-              # needed to have better driver/monitor template
-              driver_inc = dummy.sv inline
-              monitor_inc = dummy.sv inline
-
-              ```
-      3. create a pinlist
-      4. generate code with **./gen**
-      5. look at the code, Q&A
-      6. make sure it compiles with **./run**
-          - comment out do_mon() in monitors for now
-          - comment out do_drive() in drivers for now
+      3. generate code with **./gen**
+      4. look at the code, Q&A
+      5. create **./output/bin/dut_files.f**
+      6. modify **top_th.sv**
+      7. make sure it compiles with **./run**
 
 ### week3 day2
   1. add the following in **top_tb.sv** to dump all wavesforms
@@ -78,7 +70,7 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
         end
       `endif
       ```
-  2. interface: use [clocking blocks](https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-clocking-tutorial), make sure it compiles
+  2. interface: edit the [clocking blocks](https://www.doulos.com/knowhow/systemverilog/systemverilog-tutorials/systemverilog-clocking-tutorial)
   3. monitor & driver: fill out **do_mon()** and **do_drive()**, make sure it compiles
   4. sequence
       - definition: "virtual sequence = sequence launching other sequences"
@@ -86,14 +78,13 @@ Learn how to build a complete UVM IP-level testbench in 3 weeks
 
 ### week3 day3
   1. scoreboard
-      1. read this [webpage](http://www.testbench.in/UL_11_PHASE_8_SCOREBOARD.html)
-      2. create a scoreboard for your 2 agents
-      3. connect the scoreboard to the monitors in the uvm_env
+      1. populate the `write_from_*()` functions in your scoreboard
+      2. make sure it works as expected
   2. add delays in the drivers
       1. discussion: no delay = lack of coverage
       2. discussion: rate vs delay
-      3. look at **./verif_utils/verif_utils_delays.sv**
-      4. modify your sequence_items and drivers
+      3. look at **./utils/verif_utils/verif_utils_delays.sv**
+      4. modify your sequence_items and drivers as well as the generated run script
   3. drive data to X when it is not supposed to be read by the DUT
 
 ### week3 day4

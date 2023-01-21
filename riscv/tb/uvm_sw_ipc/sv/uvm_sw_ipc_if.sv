@@ -64,7 +64,7 @@ interface uvm_sw_ipc_if();
           addr[16:2] + word_idx), rdata));
       end
       char = rdata[char_idx*8 +: 8];
-      str = {str, char};
+      str = {str, string'(char)};
       i++;
     end
 

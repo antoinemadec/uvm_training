@@ -2,7 +2,6 @@
 
 set -e
 
-IUS_HOME=$(ncroot)
 TOP_DIR="../riscv-simple-sv"
 
 RTL_DIR="$TOP_DIR/core"
@@ -27,26 +26,39 @@ test_name="$1"
 
 make -C $TEST_DIR
 
-xrun -q                                               \
-  -vtimescale 1ns/1ps                                 \
-  -uvmhome ${IUS_HOME}/tools/methodology/UVM/CDNS-1.2 \
-  -access +rw                                         \
-  +incdir+$TB_DIR/include                             \
-  +incdir+$TB_DIR/uvm_sw_ipc/sv                       \
-  +incdir+$TB_DIR/top/sv                              \
-  +incdir+$TB_DIR/top_test/sv                         \
-  +incdir+$TB_DIR/top_tb/sv                           \
-  -incdir $CFG_DIR                                    \
-  -incdir $RTL_DIR/common/                            \
-  -incdir $RTL_DIR/singlecycle/                       \
-  $RTL_DIR/common/*                                   \
-  $RTL_DIR/singlecycle/*                              \
-  +text_file=$TEST_DIR/$test_name.text.vh             \
-  +data_file=$TEST_DIR/$test_name.data.vh             \
-  $TB_DIR/uvm_sw_ipc/sv/uvm_sw_ipc_pkg.sv             \
-  $TB_DIR/uvm_sw_ipc/sv/uvm_sw_ipc_if.sv              \
-  $TB_DIR/top/sv/top_pkg.sv                           \
-  $TB_DIR/top_test/sv/top_test_pkg.sv                 \
-  $TB_DIR/top_tb/sv/top_th.sv                         \
-  $TB_DIR/top_tb/sv/top_tb.sv                         \
-  +UVM_TESTNAME=$test_name
+gcc -o uvm_dpi.so -g -shared -fPIC -m64 -DVCS \
+  -I${VCS_HOME}/include \
+  -I${VCS_HOME}/etc/uvm-1.2/dpi \
+  ${VCS_HOME}/etc/uvm-1.2/dpi/uvm_dpi.cc
+
+UVM_PATH=$VCS_HOME/etc/uvm-1.2
+vcs -q                                               \
+  -l compile.log                            \
+  -sverilog                                 \
+  -kdb -debug_access+all -timescale=1ns/1ps \
+  +incdir+$UVM_PATH/src                     \
+  $UVM_PATH/src/uvm_pkg.sv                  \
+  $UVM_PATH/src/uvm_macros.svh              \
+  +incdir+$VIP_DIR/fifo_in                  \
+  +incdir+$TB_DIR/include                   \
+  +incdir+$TB_DIR/uvm_sw_ipc/sv             \
+  +incdir+$TB_DIR/top/sv                    \
+  +incdir+$TB_DIR/top_test/sv               \
+  +incdir+$TB_DIR/top_tb/sv                 \
+  +incdir+$CFG_DIR                          \
+  +incdir+$RTL_DIR/common/                  \
+  +incdir+$RTL_DIR/singlecycle/             \
+  $RTL_DIR/common/*                         \
+  $RTL_DIR/singlecycle/*                    \
+  $TB_DIR/uvm_sw_ipc/sv/uvm_sw_ipc_pkg.sv   \
+  $TB_DIR/uvm_sw_ipc/sv/uvm_sw_ipc_if.sv    \
+  $TB_DIR/top/sv/top_pkg.sv                 \
+  $TB_DIR/top_test/sv/top_test_pkg.sv       \
+  $TB_DIR/top_tb/sv/top_th.sv               \
+  $TB_DIR/top_tb/sv/top_tb.sv
+
+./simv -l run.log                         \
+  +text_file=$TEST_DIR/$test_name.text.vh \
+  +data_file=$TEST_DIR/$test_name.data.vh \
+  -sv_lib uvm_dpi \
+  +UVM_TESTNAME=$test_name $*

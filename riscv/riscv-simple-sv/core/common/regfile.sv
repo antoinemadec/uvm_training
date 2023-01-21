@@ -28,7 +28,7 @@ module regfile (
     assign rs2_data = register[rs2_address];
 
     // Register x0 is always 0
-    initial register[0] = 32'b0;
+    // initial register[0] = 32'b0;
 
     // Write port for rd
     always_ff @(posedge clock)

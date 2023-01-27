@@ -40,6 +40,7 @@ class uvm_sw_ipc extends uvm_component;
   virtual uvm_sw_ipc_if   vif;
 
   bit                     m_quit = 0;
+  bit [31:0]              m_prev_fifo_data_to_sw_empty = {32{1'b1}};
 
   extern function new(string name, uvm_component parent);
 
@@ -258,7 +259,10 @@ task uvm_sw_ipc::update_data_to_sw();
         vif.backdoor_write(m_config.fifo_data_to_sw_address[i], fifo_data_to_sw[i][0]);
       end
     end
-    vif.backdoor_write(m_config.fifo_data_to_sw_empty_address, fifo_data_to_sw_empty);
+    if (fifo_data_to_sw_empty != m_prev_fifo_data_to_sw_empty) begin
+      vif.backdoor_write(m_config.fifo_data_to_sw_empty_address, fifo_data_to_sw_empty);
+      m_prev_fifo_data_to_sw_empty = fifo_data_to_sw_empty;
+    end
   end
 endtask : update_data_to_sw
 

@@ -33,7 +33,6 @@ void uvm_sw_ipc_gen_event(uint32_t event_idx)
 
 void uvm_sw_ipc_wait_event(uint32_t event_idx)
 {
-  uint32_t i;
   uvm_sw_ipc.cmd = 0x2 | (event_idx << 8);
   while (uvm_sw_ipc.cmd != 0x0) {
     if (uvm_sw_ipc.cmd == 0x0) {

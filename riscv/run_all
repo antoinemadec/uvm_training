@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+set -e
+
+LOG_DIR="run_all_logs"
+
+rm -rf $LOG_DIR
+
+for test_src_file in $(ls tests/*.c); do
+  test_name="$(echo $test_src_file | sed 's#.*/\(.*\)\.c#\1#')"
+  rm -rf output
+  mkdir -p $LOG_DIR
+  echo $test_name
+  ./run $test_name > $LOG_DIR/$test_name.log
+done

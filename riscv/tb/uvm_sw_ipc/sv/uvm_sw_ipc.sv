@@ -7,7 +7,7 @@ class uvm_sw_ipc extends uvm_component;
   `uvm_component_utils(uvm_sw_ipc)
 
   // ___________________________________________________________________________________________
-  //             C-side                              |              UVM-side        
+  //             C-side                              |              UVM-side
   // ________________________________________________|__________________________________________
   // ...                                             |      uvm_sw_ipc_wait_event(0) waits
   // uvm_sw_ipc_gen_event(0)                      ---|-->   uvm_sw_ipc_wait_event(0) returns

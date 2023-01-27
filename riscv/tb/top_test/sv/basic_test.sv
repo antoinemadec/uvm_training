@@ -20,7 +20,7 @@ task basic_test::run_phase(uvm_phase phase);
 
   `uvm_sw_ipc_wait_event(16);
   `uvm_info(get_type_name(), "running sequence", UVM_LOW);
-  #1000;
+  #1000ns;
   `uvm_info(get_type_name(), "sequence done", UVM_LOW);
   `uvm_sw_ipc_push_data(0, 32'hdeadbeef);
   `uvm_sw_ipc_push_data(0, 32'hcafedeca);

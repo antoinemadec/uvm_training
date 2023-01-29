@@ -45,7 +45,7 @@ interface uvm_sw_ipc_if();
   endfunction : backdoor_write
 
 
-  function string backdoor_get_string(bit [31:0] addr);
+  function string backdoor_get_string(bit [31:0] addr, int length=-1);
     string str;
     bit [7:0] char;
     int i;
@@ -53,7 +53,7 @@ interface uvm_sw_ipc_if();
     char = ".";
     i = 0;
 
-    while (char != 0) begin
+    while (char != 0 && i != length) begin
       bit [31:0] rdata;
       int char_idx;
       int word_idx;

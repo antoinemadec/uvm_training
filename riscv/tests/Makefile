@@ -21,7 +21,7 @@ uvm_sw_ipc.o: uvm_sw_ipc/uvm_sw_ipc.c
 %.o: %.c
 	${CC} -c ${CFLAGS} -o $@ $<
 
-%.elf: %.o uvm_sw_ipc.o
+%.elf: %.o uvm_sw_ipc.o link.ld
 	${LD} ${LDFLAGS} $< -o $@ uvm_sw_ipc.o
 
 %.text.bin: %.elf

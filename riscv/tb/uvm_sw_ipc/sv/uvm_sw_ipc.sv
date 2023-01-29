@@ -6,6 +6,16 @@ class uvm_sw_ipc extends uvm_component;
 
   `uvm_component_utils(uvm_sw_ipc)
 
+  // see: https://github.com/bminor/newlib/blob/master/libgloss/riscv/machine/syscall.h
+  // classic syscalls
+  `define SYS_write 64
+  `define SYS_exit 93
+  // UVM syscalls
+  `define SYS_uvm_print 32
+  `define SYS_uvm_gen_event 33
+  `define SYS_uvm_wait_event 34
+  `define SYS_uvm_quit 35
+
   // ___________________________________________________________________________________________
   //             C-side                              |              UVM-side
   // ________________________________________________|__________________________________________
@@ -54,7 +64,7 @@ class uvm_sw_ipc extends uvm_component;
   extern function void process_cmd_print(int severity);
   extern function void process_cmd_gen_event(bit [23:0] event_idx);
   extern task process_cmd_wait_event(bit [23:0] event_idx);
-  extern function void process_cmd_quit(uvm_sw_ipc_tx tx);
+  extern function void process_cmd_quit();
   extern function void process_fifo_data_to_uvm(uvm_sw_ipc_tx tx, int fifo_idx);
   extern function void process_fifo_data_to_sw(uvm_sw_ipc_tx tx, int fifo_idx);
   extern task update_data_to_sw();
@@ -63,6 +73,11 @@ class uvm_sw_ipc extends uvm_component;
   extern function string str_replace(string str, string pattern, string replacement);
   extern function string str_format(string str, ref bit [31:0] q[$]);
   extern function string str_format_one_arg(string str, bit [31:0] arg, bit fmt_is_string);
+
+  // fesvr support
+  bit [31:0]  fifo_fesvr_arg[3][$];
+  extern task process_cmd_fesvr_write();
+  extern task process_cmd_fesvr_exit();
 endclass : uvm_sw_ipc
 
 
@@ -145,17 +160,25 @@ task uvm_sw_ipc::process_ram_access();
       if (tx.addr >= m_config.cmd_address && tx.addr <= m_config.fifo_data_to_sw_empty_address) begin
         `uvm_info(get_type_name(), {"received new packet from monitor: ", tx.sprint()}, UVM_DEBUG)
       end
+      // command
       if (tx.addr == m_config.cmd_address) begin
-        process_cmd(tx);
+        fork
+          process_cmd(tx);
+        join_none
       end
-      else begin
-        for (int i = 0; i < UVM_SW_IPC_FIFO_NB; i++) begin
-          if (tx.addr == m_config.fifo_data_to_uvm_address[i]) begin
-            process_fifo_data_to_uvm(tx, i);
-          end
-          if (tx.addr == m_config.fifo_data_to_sw_address[i]) begin
-            process_fifo_data_to_sw(tx, i);
-          end
+      // fesvr args fifo
+      for (int i = 0; i < 3; i++) begin
+        if (tx.rwb == 0 && tx.addr == m_config.fesvr_arg_address[i]) begin
+          fifo_fesvr_arg[i].push_back(tx.data);
+        end
+      end
+      // other fifo
+      for (int i = 0; i < UVM_SW_IPC_FIFO_NB; i++) begin
+        if (tx.addr == m_config.fifo_data_to_uvm_address[i]) begin
+          process_fifo_data_to_uvm(tx, i);
+        end
+        if (tx.addr == m_config.fifo_data_to_sw_address[i]) begin
+          process_fifo_data_to_sw(tx, i);
         end
       end
     end
@@ -168,16 +191,68 @@ task uvm_sw_ipc::process_cmd(uvm_sw_ipc_tx tx);
   {cmd_io, cmd} = tx.data;
   if (tx.rwb == 0) begin
     case (cmd)
-      8'h0:  process_cmd_print(.severity(cmd_io));
-      8'h1:  process_cmd_gen_event(.event_idx(cmd_io));
-      8'h2:  process_cmd_wait_event(.event_idx(cmd_io));
-      8'hff: process_cmd_quit(tx);
+      // classic syscalls
+      `SYS_write:          process_cmd_fesvr_write();
+      `SYS_exit:           process_cmd_fesvr_exit();
+      // UVM syscalls
+      `SYS_uvm_print:      process_cmd_print(.severity(cmd_io));
+      `SYS_uvm_gen_event:  process_cmd_gen_event(.event_idx(cmd_io));
+      `SYS_uvm_wait_event: process_cmd_wait_event(.event_idx(cmd_io));
+      `SYS_uvm_quit:       process_cmd_quit();
       default: begin
         `uvm_fatal(get_type_name(), $sformatf("cmd=0x%x does not exist", cmd))
       end
     endcase
   end
 endtask : process_cmd
+
+
+task uvm_sw_ipc::process_cmd_fesvr_write();
+  bit [31:0] addr;
+  bit [31:0] length;
+  string str;
+
+  `uvm_info(get_type_name(), "fesvr_write: wait for args to be pused", UVM_DEBUG)
+  for (int i=0; i<3; i++) begin
+    wait(fifo_fesvr_arg[i].size() >= 1);
+  end
+
+  void'(fifo_fesvr_arg[0].pop_front());
+  addr = fifo_fesvr_arg[1].pop_front();
+  length = fifo_fesvr_arg[2].pop_front();
+
+  str = vif.backdoor_get_string(addr, length);
+  `uvm_info(get_type_name(), $sformatf("fesvr_write: addr=0x%0x, str=%s", addr, str), UVM_DEBUG)
+  str = {"[sw] ", str};
+  `uvm_info(get_type_name(), str, UVM_LOW)
+
+  // fesvr: fromhost response
+  vif.backdoor_write(m_config.fesvr_response_address, 1);
+endtask : process_cmd_fesvr_write
+
+
+task uvm_sw_ipc::process_cmd_fesvr_exit();
+  bit [31:0] exit_code;
+
+  `uvm_info(get_type_name(), "fesvr_exit: wait for args to be pused", UVM_DEBUG)
+  for (int i=0; i<3; i++) begin
+    wait(fifo_fesvr_arg[i].size() >= 1);
+  end
+
+  exit_code = fifo_fesvr_arg[0].pop_front();
+  void'(fifo_fesvr_arg[1].pop_front());
+  void'(fifo_fesvr_arg[2].pop_front());
+
+  if (exit_code == 0) begin
+    `uvm_info(get_type_name(), "exit with code 0", UVM_LOW)
+  end else begin
+    `uvm_fatal(get_type_name(), $sformatf("exit with code %0d", exit_code))
+  end
+  process_cmd_quit();
+
+  // fesvr: fromhost response
+  vif.backdoor_write(m_config.fesvr_response_address, 1);
+endtask : process_cmd_fesvr_exit
 
 
 function void uvm_sw_ipc::process_cmd_print(int severity);
@@ -223,7 +298,7 @@ task uvm_sw_ipc::process_cmd_wait_event(bit [23:0] event_idx);
 endtask : process_cmd_wait_event
 
 
-function void uvm_sw_ipc::process_cmd_quit(uvm_sw_ipc_tx tx);
+function void uvm_sw_ipc::process_cmd_quit();
   `uvm_info(get_type_name(), "end of simulation", UVM_LOW)
   m_quit = 1;
 endfunction : process_cmd_quit

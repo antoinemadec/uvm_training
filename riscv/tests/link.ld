@@ -41,11 +41,10 @@ SECTIONS
     KEEP (*(SORT_NONE(.fini)))
   } >flash AT>flash :flash
 
-  .uvm_sw_ipc            :
+  .uvm_sw_ipc :
   {
     . = ORIGIN(ram);
     KEEP(*(.uvm_sw_ipc))
-    . = . + (2+2*3);
   } >ram AT>ram :ram
 
   . = ALIGN(4);

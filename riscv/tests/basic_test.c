@@ -13,7 +13,8 @@ int main(int argc, char *argv[])
   uvm_sw_ipc_print_info(1, "gen event 0x%0x", 16);
   uvm_sw_ipc_gen_event(16);
 
-  uvm_sw_ipc_print_info(0, "wait event 1");
+  sys_write("wait event 1", 12);
+  sys_write("123456789", -1);
   uvm_sw_ipc_wait_event(1);
   i = 0;
   while (uvm_sw_ipc_pull_data(0, &data)) {
@@ -25,6 +26,7 @@ int main(int argc, char *argv[])
   uvm_sw_ipc_gen_event(0);
 
   uvm_sw_ipc_print_warning(0, "bye bye");
+  sys_exit(0);
   uvm_sw_ipc_quit();
   return 0;
 }

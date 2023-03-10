@@ -93,7 +93,7 @@ endfunction : new
 
 function void uvm_sw_ipc::build_phase(uvm_phase phase);
   if (!uvm_config_db #(uvm_sw_ipc_config)::get(this, "", "config", m_config))
-    `uvm_error(get_type_name(), "uvm_sw_ipc config not found")
+    `uvm_error(m_config.ipc_name, "uvm_sw_ipc config not found")
 
   m_monitor = uvm_sw_ipc_monitor::type_id::create("m_monitor", this);
 endfunction : build_phase
@@ -101,7 +101,7 @@ endfunction : build_phase
 
 function void uvm_sw_ipc::connect_phase(uvm_phase phase);
   if (m_config.vif == null)
-    `uvm_warning(get_type_name(), "uvm_sw_ipc virtual interface is not set!")
+    `uvm_warning(m_config.ipc_name, "uvm_sw_ipc virtual interface is not set!")
 
   vif                = m_config.vif;
   m_monitor.vif      = m_config.vif;
@@ -158,7 +158,7 @@ task uvm_sw_ipc::process_ram_access();
       uvm_sw_ipc_tx tx;
       monitor_fifo.get(tx);
       if (tx.addr >= m_config.cmd_address && tx.addr <= m_config.fifo_data_to_sw_empty_address) begin
-        `uvm_info(get_type_name(), {"received new packet from monitor: ", tx.sprint()}, UVM_DEBUG)
+        `uvm_info(m_config.ipc_name, {"received new packet from monitor: ", tx.sprint()}, UVM_DEBUG)
       end
       // command
       if (tx.addr == m_config.cmd_address) begin
@@ -200,7 +200,7 @@ task uvm_sw_ipc::process_cmd(uvm_sw_ipc_tx tx);
       `SYS_uvm_wait_event: process_cmd_wait_event(.event_idx(cmd_io));
       `SYS_uvm_quit:       process_cmd_quit();
       default: begin
-        `uvm_fatal(get_type_name(), $sformatf("cmd=0x%x does not exist", cmd))
+        `uvm_fatal(m_config.ipc_name, $sformatf("cmd=0x%x does not exist", cmd))
       end
     endcase
   end
@@ -212,7 +212,7 @@ task uvm_sw_ipc::process_cmd_fesvr_write();
   bit [31:0] length;
   string str;
 
-  `uvm_info(get_type_name(), "fesvr_write: wait for args to be pused", UVM_DEBUG)
+  `uvm_info(m_config.ipc_name, "fesvr_write: wait for args to be pused", UVM_DEBUG)
   for (int i=0; i<3; i++) begin
     wait(fifo_fesvr_arg[i].size() >= 1);
   end
@@ -222,9 +222,9 @@ task uvm_sw_ipc::process_cmd_fesvr_write();
   length = fifo_fesvr_arg[2].pop_front();
 
   str = vif.backdoor_get_string(addr, length);
-  `uvm_info(get_type_name(), $sformatf("fesvr_write: addr=0x%0x, str=%s", addr, str), UVM_DEBUG)
+  `uvm_info(m_config.ipc_name, $sformatf("fesvr_write: addr=0x%0x, str=%s", addr, str), UVM_DEBUG)
   str = {"[sw] ", str};
-  `uvm_info(get_type_name(), str, UVM_LOW)
+  `uvm_info(m_config.ipc_name, str, UVM_LOW)
 
   // fesvr: fromhost response
   vif.backdoor_write(m_config.fesvr_response_address, 1);
@@ -234,7 +234,7 @@ endtask : process_cmd_fesvr_write
 task uvm_sw_ipc::process_cmd_fesvr_exit();
   bit [31:0] exit_code;
 
-  `uvm_info(get_type_name(), "fesvr_exit: wait for args to be pused", UVM_DEBUG)
+  `uvm_info(m_config.ipc_name, "fesvr_exit: wait for args to be pused", UVM_DEBUG)
   for (int i=0; i<3; i++) begin
     wait(fifo_fesvr_arg[i].size() >= 1);
   end
@@ -244,9 +244,9 @@ task uvm_sw_ipc::process_cmd_fesvr_exit();
   void'(fifo_fesvr_arg[2].pop_front());
 
   if (exit_code == 0) begin
-    `uvm_info(get_type_name(), "exit with code 0", UVM_LOW)
+    `uvm_info(m_config.ipc_name, "exit with code 0", UVM_LOW)
   end else begin
-    `uvm_fatal(get_type_name(), $sformatf("exit with code %0d", exit_code))
+    `uvm_fatal(m_config.ipc_name, $sformatf("exit with code %0d", exit_code))
   end
   process_cmd_quit();
 
@@ -261,52 +261,52 @@ function void uvm_sw_ipc::process_cmd_print(int severity);
   int fifo_cmd_size;
   addr = fifo_data_to_uvm[UVM_SW_IPC_FIFO_NB-1].pop_front();
   str = str_format(vif.backdoor_get_string(addr), fifo_data_to_uvm[UVM_SW_IPC_FIFO_NB-1]);
-  `uvm_info(get_type_name(), $sformatf("print: addr=0x%0x, str=%s", addr, str), UVM_DEBUG)
+  `uvm_info(m_config.ipc_name, $sformatf("print: addr=0x%0x, str=%s", addr, str), UVM_DEBUG)
   str = {"[sw] ", str};
   case (severity)
-    0: `uvm_info(get_type_name(), str, UVM_LOW)
-    1: `uvm_warning(get_type_name(), str)
-    2: `uvm_error(get_type_name(), str)
-    3: `uvm_fatal(get_type_name(), str)
+    0: `uvm_info(m_config.ipc_name, str, UVM_LOW)
+    1: `uvm_warning(m_config.ipc_name, str)
+    2: `uvm_error(m_config.ipc_name, str)
+    3: `uvm_fatal(m_config.ipc_name, str)
     default: begin
-      `uvm_fatal(get_type_name(), $sformatf("print severity=%0d is not defined", severity))
+      `uvm_fatal(m_config.ipc_name, $sformatf("print severity=%0d is not defined", severity))
     end
   endcase
   fifo_cmd_size = fifo_data_to_uvm[UVM_SW_IPC_FIFO_NB-1].size();
   if (fifo_cmd_size != 0) begin
-    `uvm_fatal(get_type_name(), $sformatf("fifo_cmd_size=%0d at the end of process_cmd_print()", fifo_cmd_size))
+    `uvm_fatal(m_config.ipc_name, $sformatf("fifo_cmd_size=%0d at the end of process_cmd_print()", fifo_cmd_size))
   end
 endfunction : process_cmd_print
 
 
 function void uvm_sw_ipc::process_cmd_gen_event(bit [23:0] event_idx);
-  `uvm_info(get_type_name(), $sformatf("process_cmd_gen_event(%0d)", event_idx), UVM_DEBUG)
+  `uvm_info(m_config.ipc_name, $sformatf("process_cmd_gen_event(%0d)", event_idx), UVM_DEBUG)
   check_max_event_idx(event_idx);
   event_to_uvm[event_idx].trigger();
 endfunction : process_cmd_gen_event
 
 
 task uvm_sw_ipc::process_cmd_wait_event(bit [23:0] event_idx);
-  `uvm_info(get_type_name(), $sformatf("process_cmd_wait_event(%0d) start", event_idx), UVM_DEBUG)
+  `uvm_info(m_config.ipc_name, $sformatf("process_cmd_wait_event(%0d) start", event_idx), UVM_DEBUG)
   check_max_event_idx(event_idx);
 
   event_to_sw[event_idx].wait_on();
   event_to_sw[event_idx].reset();
   vif.backdoor_write(m_config.cmd_address, 0);
 
-  `uvm_info(get_type_name(), $sformatf("process_cmd_wait_event(%0d) done", event_idx), UVM_DEBUG)
+  `uvm_info(m_config.ipc_name, $sformatf("process_cmd_wait_event(%0d) done", event_idx), UVM_DEBUG)
 endtask : process_cmd_wait_event
 
 
 function void uvm_sw_ipc::process_cmd_quit();
-  `uvm_info(get_type_name(), "end of simulation", UVM_LOW)
+  `uvm_info(m_config.ipc_name, "end of simulation", UVM_LOW)
   m_quit = 1;
 endfunction : process_cmd_quit
 
 
 function void uvm_sw_ipc::process_fifo_data_to_uvm(uvm_sw_ipc_tx tx, int fifo_idx);
   if (tx.rwb) begin
-    `uvm_fatal(get_type_name(), $sformatf("illegal read from SW in fifo_data_to_uvm[%0d]", fifo_idx))
+    `uvm_fatal(m_config.ipc_name, $sformatf("illegal read from SW in fifo_data_to_uvm[%0d]", fifo_idx))
   end
   fifo_data_to_uvm[fifo_idx].push_back(tx.data);
 endfunction : process_fifo_data_to_uvm
@@ -314,10 +314,10 @@ endfunction : process_fifo_data_to_uvm
 
 function void uvm_sw_ipc::process_fifo_data_to_sw(uvm_sw_ipc_tx tx, int fifo_idx);
   if (!tx.rwb) begin
-    `uvm_fatal(get_type_name(), $sformatf("illegal write from SW in fifo_data_to_sw[%0d]", fifo_idx))
+    `uvm_fatal(m_config.ipc_name, $sformatf("illegal write from SW in fifo_data_to_sw[%0d]", fifo_idx))
   end
   if (fifo_data_to_sw[fifo_idx].size() == 0) begin
-    `uvm_fatal(get_type_name(), "UVM has no data to transmit to SW")
+    `uvm_fatal(m_config.ipc_name, "UVM has no data to transmit to SW")
   end
   void'(fifo_data_to_sw[fifo_idx].pop_front());
 endfunction : process_fifo_data_to_sw
@@ -344,7 +344,7 @@ endtask : update_data_to_sw
 
 function void uvm_sw_ipc::check_max_event_idx(bit [23:0] event_idx);
   if (event_idx >= UVM_SW_IPC_EVENT_NB) begin
-    `uvm_fatal(get_type_name(), $sformatf("process_cmd_gen/wait_event(%0d): max event_idx is %0d",
+    `uvm_fatal(m_config.ipc_name, $sformatf("process_cmd_gen/wait_event(%0d): max event_idx is %0d",
       event_idx, UVM_SW_IPC_EVENT_NB-1))
   end
 endfunction : check_max_event_idx

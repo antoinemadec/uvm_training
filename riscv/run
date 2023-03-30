@@ -100,6 +100,8 @@ mkdir -p output
 cd output
 
 test_name="$1"
+shift
+
 [ "$test_name" == "" ] && test_name="basic_test"
 
 make -C $TEST_DIR

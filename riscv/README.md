@@ -53,7 +53,7 @@ void uvm_sw_ipc_print_fatal(uint32_t arg_cnt, char const *const str,  ...);
 void uvm_sw_ipc_gen_event(uint32_t event_idx);
 void uvm_sw_ipc_push_data(uint32_t fifo_idx, uint32_t data);
 ```
-  - disucssion
+  - discussion
     - uvm_event, queues
     - test with **./run gen_event_test** and **./run push_data_test**
 ### day4: UVM->C

@@ -34,7 +34,7 @@ module example_data_memory (
       if (byteena[1]) data_masked[15:8] = data[15:8];
       if (byteena[2]) data_masked[23:16] = data[23:16];
       if (byteena[3]) data_masked[31:24] = data[31:24];
-      mem[address] <= data_masked;
+      mem[address] = data_masked;
     end
 
   `ifdef DATA_HEX
